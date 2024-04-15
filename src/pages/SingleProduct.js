@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import ReactStars from "react-rating-stars-component";
 import BreadCrumb from "../components/BreadCrumb";
 import Meta from "../components/Meta";
@@ -7,10 +7,33 @@ import ReactImageZoom from "react-image-zoom";
 import Color from "../components/Color";
 import { TbGitCompare } from "react-icons/tb";
 import { AiOutlineHeart } from "react-icons/ai";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import watch from "../images/watch.jpg";
 import Container from "../components/Container";
+import { useDispatch, useSelector } from "react-redux";
+import { getSingleProduct } from "../features/products/productSlice";
+
 const SingleProduct = () => {
+  const location = useLocation();
+  const getProductId = location.pathname.split("/")[2];
+
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(getSingleProduct(getProductId))
+  }, [dispatch, getProductId]);
+
+  const product  = useSelector((state) => state.product.singleProduct);
+  
+  console.log({product});
+  // const {p_id, p_title, price, quantity, }
+
+
+  // const [quantity, setQuantity] = useState(1);
+  // const [color, setColor] = useState("");
+  // const [size, setSize] = useState("");
+
+
+
   const props = {
     width: 594,
     height: 600,

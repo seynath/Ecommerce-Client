@@ -14,7 +14,7 @@ const Home = () => {
         <div className="row">
           <div className="col-6">
             <div className="main-banner position-relative ">
-              <img
+              <imgp
                 src="images/main-banner-1.jpg"
                 className="img-fluid rounded-3"
                 alt="main banner"
@@ -177,10 +177,10 @@ const Home = () => {
           <div className="col-12">
             <h3 className="section-heading">Featured Collection</h3>
           </div>
+          {/* <ProductCard />
           <ProductCard />
           <ProductCard />
-          <ProductCard />
-          <ProductCard />
+          <ProductCard /> */}
         </div>
       </Container>
 
@@ -269,10 +269,10 @@ const Home = () => {
           </div>
         </div>
         <div className="row">
+          {/* <ProductCard />
           <ProductCard />
           <ProductCard />
-          <ProductCard />
-          <ProductCard />
+          <ProductCard /> */}
         </div>
       </Container>
       <Container class1="marque-wrapper home-wrapper-2 py-5">

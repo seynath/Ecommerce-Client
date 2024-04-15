@@ -1,13 +1,46 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import BreadCrumb from "../components/BreadCrumb";
 import Meta from "../components/Meta";
 import ReactStars from "react-rating-stars-component";
 import ProductCard from "../components/ProductCard";
 import Color from "../components/Color";
 import Container from "../components/Container";
+import { useDispatch, useSelector } from "react-redux";
+import { getAllProducts, getWishlist } from "../features/products/productSlice";
 
 const OurStore = () => {
   const [grid, setGrid] = useState(4);
+  const dispatch = useDispatch();
+
+  const productState = useSelector((state) => state.product.product)
+  const user = useSelector((state) => state?.auth?.user);
+
+
+    // Check if user is not null before destructuring id
+    // if (user !== null) {
+    //   const {id} = user;
+      // console.log(id);
+      // console.log(user);
+    // }
+
+  useEffect(() => {
+    getproducts();
+  }, []);
+
+  const getproducts = () => {
+    dispatch(getAllProducts())
+    // if (user !== null) {
+    //   dispatch(getWishlist(user.id)) // Assuming getWishlist needs userId
+    // }
+  }
+  
+
+  // const getAllWishlistProducta = () => {
+  //   dispatch(getWishlist())
+  // }
+
+  console.log({ productState });
+
   return (
     <>
       <Meta title={"Our Store"} />
@@ -242,7 +275,7 @@ const OurStore = () => {
             </div>
             <div className="products-list pb-5">
               <div className="d-flex gap-10 flex-wrap">
-                <ProductCard grid={grid} />
+                <ProductCard data={productState}  grid={grid} />
               </div>
             </div>
           </div>

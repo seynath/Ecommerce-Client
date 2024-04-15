@@ -34,7 +34,7 @@ const Header = () => {
           <div className="row align-items-center">
             <div className="col-2">
               <h2>
-                <Link className="text-white">Nisha Fashion</Link>
+                <Link to={"/"} className="text-white">Nisha Fashion</Link>
               </h2>
             </div>
             <div className="col-5">
@@ -59,18 +59,18 @@ const Header = () => {
                     className="d-flex align-items-center gap-10 text-white"
                   >
                     <img src={compare} alt="compare" />
-                    <p className="mb-0">
+                    {/* <p className="mb-0">
                       Compare <br /> Products
-                    </p>
+                    </p> */}
                   </Link>
                 </div>
                 <div>
                   <Link to="/wishlist" className="d-flex align-items-center gap-10 text-white"
                   >
                     <img src={wishlist} alt="wishlist" />
-                    <p className="mb-0">
+                    {/* <p className="mb-0">
                       Favourite <br /> wishlist
-                    </p>
+                    </p> */}
                   </Link>
                 </div>
                 <div>
@@ -79,9 +79,9 @@ const Header = () => {
                     className="d-flex align-items-center gap-10 text-white"
                   >
                     <img src={user} alt="user" />
-                    <p className="mb-0">
+                    {/* <p className="mb-0">
                       Log in <br /> My Account
-                    </p>
+                    </p> */}
                   </Link>
                 </div>
                 <div>
