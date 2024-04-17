@@ -32,12 +32,12 @@ const Header = () => {
       <header className="header-upper py-3">
         <div className="container-xxl">
           <div className="row align-items-center">
-            <div className="col-2">
+            <div className="col-3">
               <h2>
                 <Link to={"/"} className="text-white">Nisha Fashion</Link>
               </h2>
             </div>
-            <div className="col-5">
+            <div className="col-4">
               <div className="input-group">
                 <input
                   type="text"
@@ -47,12 +47,12 @@ const Header = () => {
                   aria-describedby="basic-addon2"
                 />
                 <span className="input-group-text p-3" id="basic-addon2">
-                  <BsSearch className="fs-6" />
+                  <BsSearch className="fs-7" />
                 </span>
               </div>
             </div>
             <div className="col-5">
-              <div className="header-upper-links d-flex align-items-center justify-content-between">
+              <div className="header-upper-links d-flex align-items-center gap-3 justify-content-end">
                 <div>
                   <Link
                     to="/compare-product"
