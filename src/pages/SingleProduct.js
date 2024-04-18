@@ -11,7 +11,7 @@ import { Link, useLocation } from "react-router-dom";
 import watch from "../images/watch.jpg";
 import Container from "../components/Container";
 import { useDispatch, useSelector } from "react-redux";
-import { getSingleProduct } from "../features/products/productSlice";
+import { addToCart, getSingleProduct } from "../features/products/productSlice";
 
 const SingleProduct = () => {
   const location = useLocation();
@@ -20,17 +20,22 @@ const SingleProduct = () => {
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(getSingleProduct(getProductId));
+    
   }, [dispatch, getProductId]);
   const { singleProduct } = useSelector((state) => state?.product);
-  console.log({ singleProduct });
-
+  // console.log({ singleProduct });
+  
   const initialPrice = singleProduct?.price;
-  console.log(initialPrice);
-
+  // console.log(initialPrice);
+  
+  const [orderedProduct, setorderedProduct] = useState(true);
   const [quantity, setQuantity] = useState(1);
   const [color, setColor] = useState("");
   const [size, setSize] = useState("");
   const [price, setPrice] = useState(0);
+  const [cartItems, setCartItems] = useState([]);
+
+
 
   // const handleColorChange = (colorCode) => {
   //   setColor(colorCode);
@@ -91,6 +96,52 @@ const SingleProduct = () => {
     }
   }, [color, size, quantity]);
 
+  const uploadCart = () => {
+    if (color && size && quantity) {
+      const selectedSizeColor = singleProduct?.size_color_quantity?.find(
+        (scq) => scq.color_code === color && scq.size_id === size
+      );
+      console.log(selectedSizeColor);
+      console.log(quantity);
+      dispatch(addToCart({ size_color_quantity_id: selectedSizeColor.size_color_quantity_id, quantity: parseInt(quantity) }));
+  
+      // if (selectedSizeColor) {
+      //   const existingItemIndex = cartItems.findIndex(
+      //     (item) => item.size_color_quantity_id === selectedSizeColor.size_color_quantity_id
+      //   );
+      //   console.log(existingItemIndex);
+  
+      //   if (existingItemIndex !== -1) {
+      //     // Update the quantity of the existing item in the cart
+      //     const updatedCartItems = [...cartItems];
+      //     updatedCartItems[existingItemIndex].quantity += parseInt(quantity);
+      //     setCartItems(updatedCartItems);
+      //     console.log(cartItems); 
+      //   } else {
+      //     // Add the new item to the cart
+      //     setCartItems([
+      //       ...cartItems,
+      //       {
+      //         size_color_quantity_id: selectedSizeColor.size_color_quantity_id,
+      //         quantity: parseInt(quantity),
+      //       },
+      //     ]);
+      //     console.log(cartItems);
+      //   }
+  
+      //   // You can display a success message or perform any other action here
+      //   alert("Item added to cart");
+      // } else {
+      //   // You can display an error message or perform any other action here
+      //   alert("Invalid selection. Please choose a valid color and size.");
+      // }
+    } else {
+      // You can display an error message or perform any other action here
+      alert("Please select color, size, and quantity to add the item to the cart.");
+    }
+  };
+  
+
   // const uniqueSizes = [...new Set(singleProduct?.size_color_quantity?.map(scq => scq.size_name))];
 
   // const uniqueSizes = [...new Set(singleProduct?.size_color_quantity?.map(scq => ({ size_id: scq.size_id, size_name: scq.size_name })))];
@@ -102,7 +153,7 @@ const SingleProduct = () => {
         index === self.findIndex((t) => t.size_id === value.size_id)
     );
 
-  console.log(uniqueSizes);
+  // console.log(uniqueSizes);
 
   const props = {
     width: 594,
@@ -114,7 +165,6 @@ const SingleProduct = () => {
       : "https://images.pexels.com/photos/190819/pexels-photo-190819.jpeg?cs=srgb&dl=pexels-fernando-arcos-190819.jpg&fm=jpg",
   };
 
-  const [orderedProduct, setorderedProduct] = useState(true);
   const copyToClipboard = (text) => {
     console.log("text", text);
     var textField = document.createElement("textarea");
@@ -202,6 +252,7 @@ const SingleProduct = () => {
                 <div className="d-flex gap-10 flex-column mt-2 mb-3">
                   <h3 className="product-heading">Size :</h3>
                   <div className="d-flex flex-wrap gap-15">
+
                     {/* {uniqueSizes?.map((scq) => (
                       <span
                         key={scq.size_color_quantity_id}
@@ -214,6 +265,7 @@ const SingleProduct = () => {
                         {scq.size_name}
                       </span>
                     ))} */}
+
                     {uniqueSizes?.map((scq) => (
                       <span
                         key={scq.size_id}
@@ -258,6 +310,7 @@ const SingleProduct = () => {
                       data-bs-toggle="modal"
                       data-bs-target="#staticBackdrop"
                       type="button"
+                      onClick={()=>{uploadCart()}}
                     >
                       Add to Cart
                     </button>
@@ -409,7 +462,7 @@ const SingleProduct = () => {
           </div>
         </div>
         <div className="row">
-          <ProductCard />
+          {/* <ProductCard /> */}
         </div>
       </Container>
 

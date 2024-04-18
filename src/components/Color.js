@@ -5,7 +5,7 @@ const Color = ({ sizeColorQuantity, onColorChange, selectedColor }) => {
     ...new Set(sizeColorQuantity?.map((item) => item.color_code)),
   ];
 
-  console.log(uniqueColorCodes);
+  // console.log(uniqueColorCodes);
 
   return (
     <ul className="colors ps-0">

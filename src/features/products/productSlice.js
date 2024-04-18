@@ -47,6 +47,18 @@ export const getWishlist = createAsyncThunk(
   }
 );
 
+export const addToCart = createAsyncThunk(
+  'product/addToCart', async(cartData ,thunkAPI) => {
+    try{
+      return await productService.addToCart(cartData);
+      
+    }
+    catch(error){
+      return thunkAPI.rejectWithValue(error.response.data); 
+    }
+  }
+);
+
 
 
 const productState = {
@@ -127,6 +139,27 @@ export const productSlice  = createSlice({
         state.singleProduct = action.payload;
       })
       .addCase(getSingleProduct.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isError = true;
+        state.isSuccess= false;
+        state.message = action.payload;
+        if(state.isError === true){
+          toast.error("Server Error, Please try again later");
+        }
+      })
+      .addCase(addToCart.pending, (state) => {
+        state.isLoading = true}
+      )
+      .addCase(addToCart.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isError = false;
+        state.isSuccess= true;
+        state.cartProduct = action.payload;
+        if(state.isSuccess === true){
+          toast.info("Added to cart");
+        }
+      })
+      .addCase(addToCart.rejected, (state, action) => {
         state.isLoading = false;
         state.isError = true;
         state.isSuccess= false;
