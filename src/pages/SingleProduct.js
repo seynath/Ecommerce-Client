@@ -16,37 +16,93 @@ import { getSingleProduct } from "../features/products/productSlice";
 const SingleProduct = () => {
   const location = useLocation();
   const getProductId = location.pathname.split("/")[2];
-  const { singleProduct } = useSelector((state) => state?.product);
-  console.log({ singleProduct });
 
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(getSingleProduct(getProductId));
   }, [dispatch, getProductId]);
+  const { singleProduct } = useSelector((state) => state?.product);
+  console.log({ singleProduct });
+
+  const initialPrice = singleProduct?.price;
+  console.log(initialPrice);
 
   const [quantity, setQuantity] = useState(1);
   const [color, setColor] = useState("");
   const [size, setSize] = useState("");
+  const [price, setPrice] = useState(0);
 
+  // const handleColorChange = (colorCode) => {
+  //   setColor(colorCode);
+  //   const selectedSizeColor = singleProduct?.size_color_quantity?.find(
+  //     (scq) => scq.color_code === colorCode && scq.size_id === size
+  //   );
+  //   setPrice(selectedSizeColor?.unit_price || 0);
+  // };
   const handleColorChange = (colorCode) => {
     setColor(colorCode);
+    const selectedSizeColor = singleProduct?.size_color_quantity?.find(
+      (scq) => scq.color_code === colorCode && scq.size_id === size
+    );
+    setPrice((selectedSizeColor?.unit_price || 0) * quantity);
   };
+
+  // const handleSizeChange = (sizeId) => {
+  //   setSize(sizeId);
+  //   getSizeQuantity();
+  // };
 
   const handleSizeChange = (sizeId) => {
     setSize(sizeId);
+    const selectedSizeColor = singleProduct?.size_color_quantity?.find(
+      (scq) => scq.color_code === color && scq.size_id === sizeId
+    );
+    setPrice((selectedSizeColor?.unit_price || 0) * quantity);
   };
+
+  // const getSizeQuantity = () => {
+  //   if (color && size) {
+  //     const selectedSizeColor = singleProduct?.size_color_quantity?.find(
+  //       (scq) => scq.color_code === color && scq.size_id === size
+  //     );
+
+  //     return selectedSizeColor?.quantity || 0;
+  //   }
+
+  //   return 0;
+  // };
 
   const getSizeQuantity = () => {
     if (color && size) {
       const selectedSizeColor = singleProduct?.size_color_quantity?.find(
         (scq) => scq.color_code === color && scq.size_id === size
       );
-
       return selectedSizeColor?.quantity || 0;
     }
-
     return 0;
   };
+
+  useEffect(() => {
+    if (color && size && quantity) {
+      const selectedSizeColor = singleProduct?.size_color_quantity?.find(
+        (scq) => scq.color_code === color && scq.size_id === size
+      );
+      setPrice((selectedSizeColor?.unit_price || 0) * quantity);
+    }
+  }, [color, size, quantity]);
+
+  // const uniqueSizes = [...new Set(singleProduct?.size_color_quantity?.map(scq => scq.size_name))];
+
+  // const uniqueSizes = [...new Set(singleProduct?.size_color_quantity?.map(scq => ({ size_id: scq.size_id, size_name: scq.size_name })))];
+
+  const uniqueSizes = singleProduct?.size_color_quantity
+    ?.map((scq) => ({ size_id: scq.size_id, size_name: scq.size_name }))
+    .filter(
+      (value, index, self) =>
+        index === self.findIndex((t) => t.size_id === value.size_id)
+    );
+
+  console.log(uniqueSizes);
 
   const props = {
     width: 594,
@@ -103,7 +159,11 @@ const SingleProduct = () => {
                 <h3 className="title">{singleProduct?.p_title}</h3>
               </div>
               <div className="border-bottom py-3">
-                <p className="price">Rs {singleProduct?.price}</p>
+                {price === 0 ? (
+                  <p className="price">Rs {singleProduct?.price}</p>
+                ) : (
+                  <p className="price">Rs {price}</p>
+                )}
                 <div className="d-flex align-items-center gap-10">
                   <ReactStars
                     count={5}
@@ -137,22 +197,33 @@ const SingleProduct = () => {
                 </div> */}
                 <div className="d-flex gap-10 align-items-center my-2">
                   <h3 className="product-heading">Availablity :</h3>
-                  <p className="product-data">
-                    {singleProduct?.quantity} Items Left
-                  </p>
+                  <p className="product-data">{getSizeQuantity()} Items Left</p>
                 </div>
                 <div className="d-flex gap-10 flex-column mt-2 mb-3">
                   <h3 className="product-heading">Size :</h3>
                   <div className="d-flex flex-wrap gap-15">
-                    {singleProduct?.size_color_quantity?.map((scq) => (
+                    {/* {uniqueSizes?.map((scq) => (
                       <span
                         key={scq.size_color_quantity_id}
-                        className={`badge border border-1 bg-white text-dark border-secondary ${
-                          scq.size_id === parseInt(size) ? "selected-size" : ""
+                        style={{ cursor: "pointer" }}
+                        className={`badge border border-1 text-dark border-secondary ${
+                          scq.size_id === parseInt(size) ? "bg-danger" : ""
                         }`}
                         onClick={() => handleSizeChange(scq.size_id)}
                       >
-                        {scq.size_id}
+                        {scq.size_name}
+                      </span>
+                    ))} */}
+                    {uniqueSizes?.map((scq) => (
+                      <span
+                        key={scq.size_id}
+                        style={{ cursor: "pointer" }}
+                        className={`badge border border-1 text-dark border-secondary ${
+                          scq.size_id === parseInt(size) ? "bg-danger" : ""
+                        }`}
+                        onClick={() => handleSizeChange(scq.size_id)}
+                      >
+                        {scq.size_name}
                       </span>
                     ))}
                   </div>
@@ -161,8 +232,9 @@ const SingleProduct = () => {
                   <h3 className="product-heading">Color :</h3>
 
                   <Color
-                    color={singleProduct?.colors}
+                    sizeColorQuantity={singleProduct?.size_color_quantity}
                     onColorChange={handleColorChange}
+                    selectedColor={color}
                   />
                 </div>
                 <div className="d-flex align-items-center gap-15 flex-row mt-2 mb-3">
@@ -245,6 +317,9 @@ const SingleProduct = () => {
           </div>
         </div>
       </Container>
+
+      {/* ---------------------------------------------------------------------------- */}
+
       <Container class1="reviews-wrapper home-wrapper-2">
         <div className="row">
           <div className="col-12">
@@ -305,7 +380,7 @@ const SingleProduct = () => {
               <div className="reviews mt-4">
                 <div className="review">
                   <div className="d-flex gap-10 align-items-center">
-                    <h6 className="mb-0">Navdeep</h6>
+                    <h6 className="mb-0">XYZ</h6>
                     <ReactStars
                       count={5}
                       size={24}
