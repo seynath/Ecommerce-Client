@@ -60,6 +60,29 @@ export const addToCart = createAsyncThunk(
 );
 
 
+export const getCart = createAsyncThunk(
+  'product/getCart', async(thunkAPI) => {
+    try{
+      return await productService.getCart();
+    }
+    catch(error){
+      return thunkAPI.rejectWithValue(error.response.data);
+    }
+  }
+);
+
+export const removeFromCartItem = createAsyncThunk(
+  'product/removeFromCartItem', async(cartItemId ,thunkAPI) => {
+    try{
+      return await productService.removeFromCartItem(cartItemId);
+    }
+    catch(error){
+      return thunkAPI.rejectWithValue(error.response.data);
+    }
+  }
+);
+
+
 
 const productState = {
   product: "",
@@ -72,7 +95,10 @@ const productState = {
 export const productSlice  = createSlice({
   name: 'product',
   initialState: productState,
-  reducers: {},
+  reducers: {
+
+    
+  },
   extraReducers: (builder) => {
     builder
     .addCase(getAllProducts.pending, (state) => {
@@ -151,15 +177,92 @@ export const productSlice  = createSlice({
         state.isLoading = true}
       )
       .addCase(addToCart.fulfilled, (state, action) => {
+        
+        const { size_color_quantity_id, quantity } = action.payload;
+        const itemIndex = state.cart.findIndex(
+          (item) => item.size_color_quantity_id === size_color_quantity_id
+        );
+      
+        if (itemIndex !== -1) {
+          state.cart[itemIndex].quantity += quantity;
+        } else {
+          state.cart.push(action.payload);
+        }
+      
         state.isLoading = false;
         state.isError = false;
-        state.isSuccess= true;
-        state.cartProduct = action.payload;
-        if(state.isSuccess === true){
+        state.isSuccess = true;
+        if (state.isSuccess === true) {
           toast.info("Added to cart");
         }
       })
+      
+      // .addCase(addToCart.fulfilled, (state, action) => {
+
+      //   const { size_color_quantity_id, quantity } = action.payload;
+      //   const itemIndex = state.cart.findIndex(
+      //     (item) => item.size_color_quantity_id === size_color_quantity_id
+      //   );
+  
+      //   if (itemIndex !== -1) {
+      //     state.cart[itemIndex].quantity += quantity;
+      //   } else {
+      //     state.cart.push(action.payload);
+      //   }
+        
+      //   state.isLoading = false;
+      //   state.isError = false;
+      //   state.isSuccess= true;
+      //   state.cart = action.payload;
+      //   if(state.isSuccess === true){
+      //     toast.info("Added to cart");
+      //   }
+      // })
       .addCase(addToCart.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isError = true;
+        state.isSuccess= false;
+        state.message = action.payload;
+        if(state.isError === true){
+          toast.error("Server Error, Please try again later");
+        }
+      })
+      .addCase(getCart.pending, (state) => {
+        state.isLoading = true}
+      )
+      .addCase(getCart.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isError = false;
+        state.isSuccess= true;
+        state.cart = action.payload;
+      })
+      .addCase(getCart.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isError = true;
+        state.isSuccess= false;
+        state.message = action.payload;
+        if(state.isError === true){
+          toast.error("Server Error, Please try again later");
+        }
+      })
+      .addCase(removeFromCartItem.pending, (state) => {
+        state.isLoading = true}
+      )
+      .addCase(removeFromCartItem.fulfilled, (state, action) => {
+
+        
+
+        state.isLoading = false;
+        state.isError = false;
+        state.isSuccess= true;
+        state.cart = state.cart.filter(
+          (item) => item.id !== action.payload
+        );
+        if(state.isSuccess === true){
+          toast.info("Removed from cart");
+        }
+      })
+      .addCase(removeFromCartItem.rejected, (state, action) => {
         state.isLoading = false;
         state.isError = true;
         state.isSuccess= false;

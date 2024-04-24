@@ -11,6 +11,8 @@ import PrdCard from "../components/PrdCard";
 const Wishlist = () => {
   const dispatch = useDispatch();
   const user = useSelector((state) => state?.auth?.user);
+  const products = useSelector((state) => state?.product?.product);
+  const wishlistState = useSelector((state) => state?.product?.getWishlist);
 
   useEffect(() => {
     if (user) {
@@ -19,8 +21,6 @@ const Wishlist = () => {
     }
   }, []);
 
-  const products = useSelector((state) => state?.product?.product);
-  const wishlistState = useSelector((state) => state?.product?.getWishlist);
   console.log({ wishlistState });
   console.log({ products });
 
@@ -52,8 +52,8 @@ const Wishlist = () => {
       <BreadCrumb title="Wishlist" />
       <Container class1="wishlist-wrapper home-wrapper-2 py-5">
         <div className=" row d-flex flex-wrap">
-          {wishlistProducts.length > 0 ? (
-            wishlistProducts.map((product, index) => (
+          { wishlistProducts && wishlistProducts?.length > 0 ? (
+            wishlistProducts?.map((product, index) => (
              
               <PrdCard key={index} data={product} addToWishlist={addWishlist}/>
             ))

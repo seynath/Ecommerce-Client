@@ -180,7 +180,7 @@ const OurStore = () => {
                       edit={false}
                       activeColor="#ffd700"
                     />
-                    <b>$ 300</b>
+                    <b>Rs  300</b>
                   </div>
                 </div>
                 <div className="random-products d-flex">
@@ -202,7 +202,7 @@ const OurStore = () => {
                       edit={false}
                       activeColor="#ffd700"
                     />
-                    <b>$ 300</b>
+                    <b>Rs  300</b>
                   </div>
                 </div>
               </div>

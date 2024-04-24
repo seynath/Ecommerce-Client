@@ -11,7 +11,7 @@ import { Link, useLocation } from "react-router-dom";
 import watch from "../images/watch.jpg";
 import Container from "../components/Container";
 import { useDispatch, useSelector } from "react-redux";
-import { addToCart, getSingleProduct } from "../features/products/productSlice";
+import { addToCart, getCart, getSingleProduct } from "../features/products/productSlice";
 
 const SingleProduct = () => {
   const location = useLocation();
@@ -20,6 +20,7 @@ const SingleProduct = () => {
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(getSingleProduct(getProductId));
+    dispatch(getCart())
     
   }, [dispatch, getProductId]);
   const { singleProduct } = useSelector((state) => state?.product);
@@ -103,7 +104,7 @@ const SingleProduct = () => {
       );
       console.log(selectedSizeColor);
       console.log(quantity);
-      dispatch(addToCart({ size_color_quantity_id: selectedSizeColor.size_color_quantity_id, quantity: parseInt(quantity) }));
+      dispatch(addToCart({ size_color_quantity_id: selectedSizeColor.size_color_quantity_id, quantity: parseInt(quantity), product_total: price }));
   
       // if (selectedSizeColor) {
       //   const existingItemIndex = cartItems.findIndex(
@@ -212,7 +213,7 @@ const SingleProduct = () => {
                 {price === 0 ? (
                   <p className="price">Rs {singleProduct?.price}</p>
                 ) : (
-                  <p className="price">Rs {price}</p>
+                  <p className="price">Rs {price.toFixed(2)}</p>
                 )}
                 <div className="d-flex align-items-center gap-10">
                   <ReactStars
@@ -488,13 +489,13 @@ const SingleProduct = () => {
             <div className="modal-body py-0">
               <div className="d-flex align-items-center">
                 <div className="flex-grow-1 w-50">
-                  <img src={watch} className="img-fluid" alt="product imgae" />
+                  <img src={singleProduct?.image_link} className="img-fluid " alt="product imgae" />
                 </div>
-                <div className="d-flex flex-column flex-grow-1 w-50">
-                  <h6 className="mb-3">Apple Watch</h6>
-                  <p className="mb-1">Quantity: asgfd</p>
-                  <p className="mb-1">Color: asgfd</p>
-                  <p className="mb-1">Size: asgfd</p>
+                <div className="d-flex flex-column flex-grow-1 w-50 px-3">
+                  <h6 className="mb-3">{singleProduct?.p_title}</h6>
+                  <p className="mb-1">Quantity: {quantity}</p>
+                  <p className="mb-1">Color: {color}</p>
+                  <p className="mb-1">Size: {size}</p>
                 </div>
               </div>
             </div>

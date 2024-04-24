@@ -26,7 +26,7 @@ const CompareProduct = () => {
                 <h5 className="title">
                   Honor T1 7.0 1 GB RAM 8 GB ROM 7 Inch With Wi-Fi+3G Tablet
                 </h5>
-                <h6 className="price mb-3 mt-3">$ 100</h6>
+                <h6 className="price mb-3 mt-3">Rs  100</h6>
 
                 <div>
                   <div className="product-detail">
@@ -70,7 +70,7 @@ const CompareProduct = () => {
                 <h5 className="title">
                   Honor T1 7.0 1 GB RAM 8 GB ROM 7 Inch With Wi-Fi+3G Tablet
                 </h5>
-                <h6 className="price mb-3 mt-3">$ 100</h6>
+                <h6 className="price mb-3 mt-3">Rs  100</h6>
 
                 <div>
                   <div className="product-detail">

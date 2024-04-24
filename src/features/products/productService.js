@@ -52,20 +52,33 @@ const addToCart = async ( cartData )=>{
   }
 }
 
+const getCart = async () => {
+  try{
+    const response = await axios.get(`${base_url}user/cart`, config);
+    return response.data;
+  }
+  catch(error){
+    return error.response.data.message;
+  }
+}
 
-// const login = async (userData) => {
-//   try {
-//     const response = await axios.post(`${base_url}user/login`, userData);
-//     return response.data;
-//   } catch (error) {
-//     return error.response.data.message;
-//   }
-// }
+const removeFromCartItem = async (cartItemId) => {
+  try {
+    const response = await axios.delete(`${base_url}user/cart/${cartItemId}`, config);
+    return response.data;
+  } catch (error) {
+    return error.response.data.message;
+  }
+}
+
+
 
 export const productService = {
   getAllProducts ,
   addToWishlist,
   getWishlist,
   getSingleProduct,
-  addToCart
+  addToCart,
+  getCart,
+  removeFromCartItem
 };
