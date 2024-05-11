@@ -35,7 +35,7 @@ const addToWishlist = async (prodId) => {
 const getWishlist = async () => {
   try {
     const response = await axios.get(`${base_url}user/wishlist`, config);
-    // console.log(response.data);
+    console.log(response.data);
     return response.data;
   } catch (error) {
     return error.response.data.message;
@@ -55,6 +55,7 @@ const addToCart = async ( cartData )=>{
 const getCart = async () => {
   try{
     const response = await axios.get(`${base_url}user/cart`, config);
+    console.log(response);
     return response.data;
   }
   catch(error){

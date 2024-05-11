@@ -29,6 +29,7 @@ export const addToWishlist = createAsyncThunk(
   'product/addToWishlist', async(productId ,thunkAPI) => {
     try{
      return await productService.addToWishlist(productId);
+     
      }
     catch(error){
       return thunkAPI.rejectWithValue(error.response.data);
@@ -85,7 +86,9 @@ export const removeFromCartItem = createAsyncThunk(
 
 
 const productState = {
-  product: "",
+  product: [],
+  cart: [],
+  getWishlist: [],
   isError  : false,
   isSuccess : false,
   isLoading: false,
@@ -179,8 +182,8 @@ export const productSlice  = createSlice({
       .addCase(addToCart.fulfilled, (state, action) => {
         
         const { size_color_quantity_id, quantity } = action.payload;
-        const itemIndex = state.cart.findIndex(
-          (item) => item.size_color_quantity_id === size_color_quantity_id
+        const itemIndex = state?.cart?.findIndex(
+          (item) => item?.size_color_quantity_id === size_color_quantity_id
         );
       
         if (itemIndex !== -1) {
@@ -196,6 +199,29 @@ export const productSlice  = createSlice({
           toast.info("Added to cart");
         }
       })
+
+      // .addCase(addToCart.fulfilled, (state, action) => {
+      //   const { size_color_quantity_id, quantity } = action.payload;
+      //   const existingItemIndex = state.cart.findIndex(
+      //     (item) => item?.size_color_quantity_id === size_color_quantity_id
+      //   );
+      
+      //   if (existingItemIndex !== -1) {
+      //     state.cart[existingItemIndex].quantity += quantity;
+      //   } else {
+      //     state.cart.push(action.payload);
+      //   }
+      
+      //   state.isLoading = false;
+      //   state.isError = false;
+      //   state.isSuccess = true;
+      
+      //   if (state.isSuccess === true) {
+      //     toast.info("Added to cart");
+      //   }
+      // })
+    
+      
       
       // .addCase(addToCart.fulfilled, (state, action) => {
 
@@ -218,6 +244,7 @@ export const productSlice  = createSlice({
       //     toast.info("Added to cart");
       //   }
       // })
+      
       .addCase(addToCart.rejected, (state, action) => {
         state.isLoading = false;
         state.isError = true;
@@ -248,20 +275,28 @@ export const productSlice  = createSlice({
       .addCase(removeFromCartItem.pending, (state) => {
         state.isLoading = true}
       )
-      .addCase(removeFromCartItem.fulfilled, (state, action) => {
+      // .addCase(removeFromCartItem.fulfilled, (state, action) => {
 
         
 
+      //   state.isLoading = false;
+      //   state.isError = false;
+      //   state.isSuccess= true;
+      //   state.cart = state?.cart?.filter(
+      //     (item) => item.id !== action.payload
+      //   );
+      //   if(state.isSuccess === true){
+      //     toast.info("Removed from cart");
+      //   }
+      // })
+      .addCase(removeFromCartItem.fulfilled, (state, action) => {
+        state.cart = state?.cart?.filter((item) => item.id !== action.payload);
+      
         state.isLoading = false;
         state.isError = false;
-        state.isSuccess= true;
-        state.cart = state.cart.filter(
-          (item) => item.id !== action.payload
-        );
-        if(state.isSuccess === true){
-          toast.info("Removed from cart");
-        }
+        state.isSuccess = true;
       })
+      
       .addCase(removeFromCartItem.rejected, (state, action) => {
         state.isLoading = false;
         state.isError = true;

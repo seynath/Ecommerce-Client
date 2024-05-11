@@ -1,6 +1,7 @@
 import {createSlice, createAsyncThunk} from '@reduxjs/toolkit';
 import { authService } from './userService';
 import { toast } from 'react-toastify';
+import { getCart } from '../products/productSlice';
 
 const getUserfromLocalStorage = localStorage.getItem("user")
   ? JSON.parse(localStorage.getItem("user"))
@@ -9,6 +10,8 @@ const getUserfromLocalStorage = localStorage.getItem("user")
 export const registerUser = createAsyncThunk(
   'auth/register', async(userData ,thunkAPI) => {
     try{
+      
+
      return await authService.register(userData);
 
     }catch(error){
@@ -18,14 +21,42 @@ export const registerUser = createAsyncThunk(
   }
 );
 
-export const loginUser = createAsyncThunk(
-  'auth/login', async(userData ,thunkAPI) => {
+export const createOrder = createAsyncThunk(
+  'auth/createOrder', async(orderData ,thunkAPI) => {
     try{
-      return await authService.login(userData);
+      return await authService.createOrder(orderData);
     }catch(error){
       return thunkAPI.rejectWithValue(error.response.data);
     }
 });
+
+
+// export const loginUser = createAsyncThunk(
+//   'auth/login', async(userData ,thunkAPI) => {
+//     try{
+//       return await authService.login(userData);
+      
+//     }catch(error){
+//       return thunkAPI.rejectWithValue(error.response.data);
+//     }
+// });
+
+
+
+export const loginUser = createAsyncThunk(
+  'auth/login', 
+  async (userData , {dispatch, rejectWithValue}) => {
+    try{
+      const response = await authService.login(userData);
+      if (response) {
+        dispatch(getCart());
+      }
+      return response;
+    } catch(error){
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
 
 const initialState = {
   user: getUserfromLocalStorage,
@@ -86,6 +117,24 @@ export const authSlice  = createSlice({
           if(state.isError === true){
             toast.error("Server Error, Please try again later");
           }
+        })
+      
+        .addCase(createOrder.pending, (state) => {
+          state.isLoading = true})
+        .addCase(createOrder.fulfilled, (state,action) =>{
+          state.isLoading = false;
+          state.isSuccess = true;
+          state.isError = false;
+          state.message = action.payload.message; // extract only the message property
+
+          toast.info("Order Created Successfully");
+        })
+        .addCase(createOrder.rejected, (state)=>{
+          state.isLoading = false;
+          state.isError = true;
+          state.isSuccess = false;
+          toast.error("Error creating order, Please try again later");
+        
         })
     
 

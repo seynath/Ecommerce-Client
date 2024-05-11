@@ -1,17 +1,27 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React, { useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import BreadCrumb from "../components/BreadCrumb";
 import Meta from "../components/Meta";
 import Container from "../components/Container";
 import CustomInput from "../components/CustomInput";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import { useDispatch } from "react-redux";
+import { useDispatch , useSelector} from "react-redux";
 import { toast } from "react-toastify";
 import { loginUser } from "../features/user/userSlice";
+import { getCart, getWishlist } from "../features/products/productSlice";
 
 const Login = () => {
 const dispatch = useDispatch();
+const navigate = useNavigate();
+// const loginStatus = useSelector((state) => state?.auth?.isSuccess); // replace 'auth' with the name of your auth slice
+
+// useEffect(() => {
+//   if (loginStatus) {
+//     navigate("/");
+//   }
+// }, [loginStatus, navigate]);
+
 
   const schema = Yup.object().shape({
     email: Yup.string()
@@ -29,6 +39,15 @@ const dispatch = useDispatch();
     onSubmit: (values) => {
       console.log(values);
       dispatch(loginUser(values))
+      .then((response) => {
+        console.log(response.payload.token);
+        if (response.payload.token) {
+        
+          navigate("/");
+        }
+      })
+
+      
     },
   });
 

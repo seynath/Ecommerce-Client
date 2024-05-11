@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
 import Marquee from "react-fast-marquee";
 import BlogCard from "../components/BlogCard";
@@ -6,8 +6,27 @@ import ProductCard from "../components/ProductCard";
 import SpecialProduct from "../components/SpecialProduct";
 import Container from "../components/Container";
 import { services } from "../utils/Data";
+import { useDispatch, useSelector } from "react-redux";
+import { getCart, getWishlist } from "../features/products/productSlice";
 
 const Home = () => {
+
+  const dispatch = useDispatch();
+  const user = useSelector((state)=> (state.auth.user))
+  console.log(user);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      if(user){
+        await dispatch(getCart());
+        await dispatch(getWishlist());
+      }
+    }
+  
+    fetchData();
+  }, []);
+
+ 
   return (
     <>
       <Container class1="home-wrapper-1 py-5">

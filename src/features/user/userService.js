@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { base_url } from '../../utils/axiosConfig';
+import { base_url, config } from '../../utils/axiosConfig';
 
 const register = async (userData) => {
   try {
@@ -22,7 +22,19 @@ const login = async (userData) => {
   }
 }
 
+const createOrder = async (orderData)=>{
+  try{
+    console.log(orderData);
+    console.log(config);
+    return await axios.post(`${base_url}user/cart/create`, orderData, config);
+  }catch(error){
+    return error.response.data.message;
+  }
+
+}
+
 export const authService = {
   register ,
-  login
+  login,
+  createOrder
 };

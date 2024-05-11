@@ -7,44 +7,46 @@ import ReactImageZoom from "react-image-zoom";
 import Color from "../components/Color";
 import { TbGitCompare } from "react-icons/tb";
 import { AiOutlineHeart } from "react-icons/ai";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import watch from "../images/watch.jpg";
 import Container from "../components/Container";
 import { useDispatch, useSelector } from "react-redux";
-import { addToCart, getCart, getSingleProduct } from "../features/products/productSlice";
+import {
+  addToCart,
+  getCart,
+  getSingleProduct,
+} from "../features/products/productSlice";
 
 const SingleProduct = () => {
   const location = useLocation();
   const getProductId = location.pathname.split("/")[2];
-
+  const navigate=useNavigate()
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(getSingleProduct(getProductId));
-    dispatch(getCart())
-    
+    if (user){
+
+      dispatch(getCart());
+    }
   }, [dispatch, getProductId]);
   const { singleProduct } = useSelector((state) => state?.product);
+
+  const user = useSelector((state) => state.auth.user);
   // console.log({ singleProduct });
+
   
+
   const initialPrice = singleProduct?.price;
   // console.log(initialPrice);
-  
+
   const [orderedProduct, setorderedProduct] = useState(true);
   const [quantity, setQuantity] = useState(1);
   const [color, setColor] = useState("");
   const [size, setSize] = useState("");
   const [price, setPrice] = useState(0);
   const [cartItems, setCartItems] = useState([]);
+  const [userAvalable, setUserAvailable] = useState(false);
 
-
-
-  // const handleColorChange = (colorCode) => {
-  //   setColor(colorCode);
-  //   const selectedSizeColor = singleProduct?.size_color_quantity?.find(
-  //     (scq) => scq.color_code === colorCode && scq.size_id === size
-  //   );
-  //   setPrice(selectedSizeColor?.unit_price || 0);
-  // };
   const handleColorChange = (colorCode) => {
     setColor(colorCode);
     const selectedSizeColor = singleProduct?.size_color_quantity?.find(
@@ -53,11 +55,6 @@ const SingleProduct = () => {
     setPrice((selectedSizeColor?.unit_price || 0) * quantity);
   };
 
-  // const handleSizeChange = (sizeId) => {
-  //   setSize(sizeId);
-  //   getSizeQuantity();
-  // };
-
   const handleSizeChange = (sizeId) => {
     setSize(sizeId);
     const selectedSizeColor = singleProduct?.size_color_quantity?.find(
@@ -65,18 +62,6 @@ const SingleProduct = () => {
     );
     setPrice((selectedSizeColor?.unit_price || 0) * quantity);
   };
-
-  // const getSizeQuantity = () => {
-  //   if (color && size) {
-  //     const selectedSizeColor = singleProduct?.size_color_quantity?.find(
-  //       (scq) => scq.color_code === color && scq.size_id === size
-  //     );
-
-  //     return selectedSizeColor?.quantity || 0;
-  //   }
-
-  //   return 0;
-  // };
 
   const getSizeQuantity = () => {
     if (color && size) {
@@ -95,57 +80,40 @@ const SingleProduct = () => {
       );
       setPrice((selectedSizeColor?.unit_price || 0) * quantity);
     }
+    if (user) {
+      setUserAvailable(true);
+    }
   }, [color, size, quantity]);
 
   const uploadCart = () => {
+
+    if (!user) {
+      // You can display an error message or perform any other action here
+      navigate("/login")
+      return;
+    }
+  
+
     if (color && size && quantity) {
       const selectedSizeColor = singleProduct?.size_color_quantity?.find(
         (scq) => scq.color_code === color && scq.size_id === size
       );
       console.log(selectedSizeColor);
       console.log(quantity);
-      dispatch(addToCart({ size_color_quantity_id: selectedSizeColor.size_color_quantity_id, quantity: parseInt(quantity), product_total: price }));
-  
-      // if (selectedSizeColor) {
-      //   const existingItemIndex = cartItems.findIndex(
-      //     (item) => item.size_color_quantity_id === selectedSizeColor.size_color_quantity_id
-      //   );
-      //   console.log(existingItemIndex);
-  
-      //   if (existingItemIndex !== -1) {
-      //     // Update the quantity of the existing item in the cart
-      //     const updatedCartItems = [...cartItems];
-      //     updatedCartItems[existingItemIndex].quantity += parseInt(quantity);
-      //     setCartItems(updatedCartItems);
-      //     console.log(cartItems); 
-      //   } else {
-      //     // Add the new item to the cart
-      //     setCartItems([
-      //       ...cartItems,
-      //       {
-      //         size_color_quantity_id: selectedSizeColor.size_color_quantity_id,
-      //         quantity: parseInt(quantity),
-      //       },
-      //     ]);
-      //     console.log(cartItems);
-      //   }
-  
-      //   // You can display a success message or perform any other action here
-      //   alert("Item added to cart");
-      // } else {
-      //   // You can display an error message or perform any other action here
-      //   alert("Invalid selection. Please choose a valid color and size.");
-      // }
+      dispatch(
+        addToCart({
+          size_color_quantity_id: selectedSizeColor.size_color_quantity_id,
+          quantity: parseInt(quantity),
+          product_total: price,
+        })
+      );
     } else {
       // You can display an error message or perform any other action here
-      alert("Please select color, size, and quantity to add the item to the cart.");
+      alert(
+        "Please select color, size, and quantity to add the item to the cart."
+      );
     }
   };
-  
-
-  // const uniqueSizes = [...new Set(singleProduct?.size_color_quantity?.map(scq => scq.size_name))];
-
-  // const uniqueSizes = [...new Set(singleProduct?.size_color_quantity?.map(scq => ({ size_id: scq.size_id, size_name: scq.size_name })))];
 
   const uniqueSizes = singleProduct?.size_color_quantity
     ?.map((scq) => ({ size_id: scq.size_id, size_name: scq.size_name }))
@@ -166,15 +134,15 @@ const SingleProduct = () => {
       : "https://images.pexels.com/photos/190819/pexels-photo-190819.jpeg?cs=srgb&dl=pexels-fernando-arcos-190819.jpg&fm=jpg",
   };
 
-  const copyToClipboard = (text) => {
-    console.log("text", text);
-    var textField = document.createElement("textarea");
-    textField.innerText = text;
-    document.body.appendChild(textField);
-    textField.select();
-    document.execCommand("copy");
-    textField.remove();
-  };
+  // const copyToClipboard = (text) => {
+  //   console.log("text", text);
+  //   var textField = document.createElement("textarea");
+  //   textField.innerText = text;
+  //   document.body.appendChild(textField);
+  //   textField.select();
+  //   document.execCommand("copy");
+  //   textField.remove();
+  // };
   const closeModal = () => {};
 
   return (
@@ -253,20 +221,6 @@ const SingleProduct = () => {
                 <div className="d-flex gap-10 flex-column mt-2 mb-3">
                   <h3 className="product-heading">Size :</h3>
                   <div className="d-flex flex-wrap gap-15">
-
-                    {/* {uniqueSizes?.map((scq) => (
-                      <span
-                        key={scq.size_color_quantity_id}
-                        style={{ cursor: "pointer" }}
-                        className={`badge border border-1 text-dark border-secondary ${
-                          scq.size_id === parseInt(size) ? "bg-danger" : ""
-                        }`}
-                        onClick={() => handleSizeChange(scq.size_id)}
-                      >
-                        {scq.size_name}
-                      </span>
-                    ))} */}
-
                     {uniqueSizes?.map((scq) => (
                       <span
                         key={scq.size_id}
@@ -305,19 +259,43 @@ const SingleProduct = () => {
                       id=""
                     />
                   </div>
+
                   <div className="d-flex align-items-center gap-30 ms-5">
+                  
+
+                  {!user ? (
                     <button
-                      className="button border-0"
+                    
+                    className="button border-0 "
+                    type="button"
+                    onClick={() => {
+                      uploadCart();
+                    }}
+                  >
+                    Add to Cart
+                  </button>
+                  ):
+                  (
+                    <button
+                    
+                      className="button border-0 "
                       data-bs-toggle="modal"
                       data-bs-target="#staticBackdrop"
                       type="button"
-                      onClick={()=>{uploadCart()}}
+                      onClick={() => {
+                        uploadCart();
+                      }}
                     >
                       Add to Cart
                     </button>
-                    <button className="button signup">Buy It Now</button>
+                  )}
+                    
+
+                    { !user ? <Link to={"/login"} className="button signup">Log In </Link> : <div></div>}
+
                   </div>
                 </div>
+
                 <div className="d-flex align-items-center gap-15">
                   {/* <div>
                     <a href="##">
@@ -329,6 +307,7 @@ const SingleProduct = () => {
                       <AiOutlineHeart className="fs-5 me-2" /> Add to Wishlist
                     </a>
                   </div>
+
                 </div>
                 <div className="d-flex gap-10 flex-column  my-3">
                   <h3 className="product-heading">Shipping & Returns :</h3>
@@ -338,6 +317,7 @@ const SingleProduct = () => {
                     <b> 5-10 business days!</b>
                   </p>
                 </div>
+
                 {/* <div className="d-flex gap-10 align-items-center my-3">
                   <h3 className="product-heading">Product Link:</h3>
                   <a
@@ -462,9 +442,7 @@ const SingleProduct = () => {
             <h3 className="section-heading">Our Popular Products</h3>
           </div>
         </div>
-        <div className="row">
-          {/* <ProductCard /> */}
-        </div>
+        <div className="row">{/* <ProductCard /> */}</div>
       </Container>
 
       <div
@@ -489,7 +467,11 @@ const SingleProduct = () => {
             <div className="modal-body py-0">
               <div className="d-flex align-items-center">
                 <div className="flex-grow-1 w-50">
-                  <img src={singleProduct?.image_link} className="img-fluid " alt="product imgae" />
+                  <img
+                    src={singleProduct?.image_link}
+                    className="img-fluid "
+                    alt="product imgae"
+                  />
                 </div>
                 <div className="d-flex flex-column flex-grow-1 w-50 px-3">
                   <h6 className="mb-3">{singleProduct?.p_title}</h6>

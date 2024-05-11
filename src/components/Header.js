@@ -1,12 +1,50 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { NavLink, Link } from "react-router-dom";
 import { BsSearch } from "react-icons/bs";
 import compare from "../images/compare.svg";
-import wishlist from "../images/wishlist.svg";
-import user from "../images/user.svg";
-import cart from "../images/cart.svg";
+import wishlistIcon from "../images/wishlist.svg";
+import userIcon from "../images/user.svg";
+import cartIcon from "../images/cart.svg";
 import menu from "../images/menu.svg";
+import { useSelector, useDispatch } from "react-redux";
+import { getCart, getWishlist } from "../features/products/productSlice";
 const Header = () => {
+
+  const dispatch = useDispatch();
+  const user = useSelector((state) => state.auth.user);
+
+  const cartState = useSelector((state) => state?.product?.cart) || [];
+  const wishlistState =
+    useSelector((state) => state?.product?.getWishlist) || [];
+
+  const [totalCart, setTotalCart] = useState(0);
+
+useEffect(() => {
+  const fetchData = async () => {
+    if(user){
+      await dispatch(getCart());
+      await dispatch(getWishlist());
+    }
+  }
+
+  fetchData();
+}, []);
+
+  useEffect(() => {
+    if (cartState && cartState?.length > 0) {
+      let totPrice = 0;
+      for (let i = 0; i < cartState?.length; i++) {
+        totPrice += Number(cartState[i]?.product_total);
+      }
+      setTotalCart(totPrice);
+    }
+  }, [cartState]);
+
+  let cartLength = 0;
+  if (cartState && Array.isArray(cartState)) {
+    cartLength = cartState.length;
+  }
+
   return (
     <>
       <header className="header-top-strip py-3">
@@ -14,7 +52,7 @@ const Header = () => {
           <div className="row">
             <div className="col-6">
               <p className="text-white mb-0">
-                Free Shipping Over 5000 & Free Returns
+                Free Shipping Over Rs 5000 & Free Returns
               </p>
             </div>
             <div className="col-6">
@@ -27,14 +65,15 @@ const Header = () => {
             </div>
           </div>
         </div>
-        
       </header>
       <header className="header-upper py-3">
         <div className="container-xxl">
           <div className="row align-items-center">
             <div className="col-3">
               <h2>
-                <Link to={"/"} className="text-white">Nisha Fashion</Link>
+                <Link to={"/"} className="text-white">
+                  Nisha Fashion
+                </Link>
               </h2>
             </div>
             <div className="col-4">
@@ -65,36 +104,67 @@ const Header = () => {
                   </Link>
                 </div>
                 <div>
-                  <Link to="/wishlist" className="d-flex align-items-center gap-10 text-white"
-                  >
-                    <img src={wishlist} alt="wishlist" />
-                    {/* <p className="mb-0">
-                      Favourite <br /> wishlist
-                    </p> */}
-                  </Link>
+                  {!user ? (
+                    <Link
+                      to="/login"
+                      className="d-flex align-items-center gap-10 text-white"
+                    >
+                      <img src={wishlistIcon} alt="wishlist" />
+                    </Link>
+                  ) : (
+                    <Link
+                      to="/wishlist"
+                      className="d-flex align-items-center gap-10 text-white"
+                    >
+                      <img src={wishlistIcon} alt="wishlist" />
+                      {/* <span className="badge bg-white text-dark">
+                        {wishlistState.length}
+                      </span> */}
+                    </Link>
+                  )}
+
+                  {/* Login */}
+               
                 </div>
                 <div>
                   <Link
                     to="/login"
                     className="d-flex align-items-center gap-10 text-white"
                   >
-                    <img src={user} alt="user" />
+                    <img src={userIcon} alt="user" />
                     {/* <p className="mb-0">
                       Log in <br /> My Account
                     </p> */}
                   </Link>
                 </div>
+
+                {/* Cart */}
                 <div>
-                  <Link
-                    to="/cart"
-                    className="d-flex align-items-center gap-10 text-white"
-                  >
-                    <img src={cart} alt="cart" />
-                    <div className="d-flex flex-column gap-10">
-                      <span className="badge bg-white text-dark">0</span>
-                      <p className="mb-0">Rs 500</p>
-                    </div>
-                  </Link>
+                  {!user ? (
+                    <Link
+                      to="/login"
+                      className="d-flex align-items-center gap-10 text-white"
+                    >
+                      <img src={cartIcon} alt="cart" />
+                      {/* <div className="d-flex flex-column gap-10">
+                        <span className="badge bg-white text-dark">0</span>
+                        <p className="mb-0">Rs 500</p>
+                      </div> */}
+                    </Link>
+                  ) : (
+                    <Link
+                      to="/cart"
+                      className="d-flex align-items-center gap-10 text-white"
+                    >
+                      <img src={cartIcon} alt="cart" />
+                      <div className="d-flex flex-column gap-10">
+                        <span className="badge bg-white text-dark">
+                          {cartLength}
+                        </span>
+                        <p className="mb-0">Rs {totalCart}</p>
+                      </div>
+                    </Link>
+                  )}
                 </div>
               </div>
             </div>
@@ -160,7 +230,6 @@ const Header = () => {
 };
 
 export default Header;
-
 
 // import React from "react";
 // import { NavLink, Link } from "react-router-dom";
