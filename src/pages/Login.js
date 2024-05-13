@@ -42,8 +42,9 @@ const navigate = useNavigate();
       .then((response) => {
         console.log(response.payload.token);
         if (response.payload.token) {
-        
-          navigate("/");
+  
+          window.location.href = "/";
+          // navigate("/");
         }
       })
 

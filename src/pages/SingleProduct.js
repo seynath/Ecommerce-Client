@@ -16,22 +16,39 @@ import {
   getCart,
   getSingleProduct,
 } from "../features/products/productSlice";
+import axios from "axios";
+import { base_url } from "../utils/axiosConfig";
+import { config } from "../utils/axiosConfig";
 
 const SingleProduct = () => {
+  const user = useSelector((state) => state.auth.user);
+  console.log(user);
   const location = useLocation();
   const getProductId = location.pathname.split("/")[2];
   const navigate=useNavigate()
   const dispatch = useDispatch();
-  useEffect(() => {
-    dispatch(getSingleProduct(getProductId));
-    if (user){
+  // useEffect(() => {
+  //   dispatch(getSingleProduct(getProductId));
+  //   if (user){
 
-      dispatch(getCart());
-    }
-  }, [dispatch, getProductId]);
+  //     dispatch(getCart());
+  //   }
+  // }, [dispatch, getProductId]);
+
+  useEffect(() => {
+    const fetchProductAndCart = async () => {
+      await dispatch(getSingleProduct(getProductId));
+      if (user) {
+        await dispatch(getCart());
+        // const response = await axios.get(`${base_url}user/cart`, config)
+
+      }
+    };
+  
+    fetchProductAndCart();
+  }, [dispatch, getProductId, user]);
   const { singleProduct } = useSelector((state) => state?.product);
 
-  const user = useSelector((state) => state.auth.user);
   // console.log({ singleProduct });
 
   

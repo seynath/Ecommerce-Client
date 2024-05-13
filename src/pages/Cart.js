@@ -64,7 +64,7 @@ const Cart = () => {
     const item = cartItems?.find(
       (item) => item.size_color_quantity_id === size_color_quantity_id
     );
-    const availableQuantity = item.productDetails.size_color_quantity;
+    const availableQuantity = item?.productDetails?.size_color_quantity;
 
     if (quantity > availableQuantity) {
       // Show an error message to the user
