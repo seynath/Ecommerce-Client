@@ -27,13 +27,20 @@ const SingleProduct = () => {
   const getProductId = location.pathname.split("/")[2];
   const navigate=useNavigate()
   const dispatch = useDispatch();
-  // useEffect(() => {
-  //   dispatch(getSingleProduct(getProductId));
-  //   if (user){
 
-  //     dispatch(getCart());
-  //   }
-  // }, [dispatch, getProductId]);
+
+
+  useEffect(() => {
+    const fetchData = async () => {
+      if(user){
+        await dispatch(getCart());
+      }
+    }
+  
+    fetchData();
+  }, []);
+
+
 
   useEffect(() => {
     const fetchProductAndCart = async () => {

@@ -114,6 +114,9 @@ const Checkout = () => {
       dispatch(createOrder(values));
     },
   });
+  useEffect(() => {
+    formik.setFieldValue('totalPrice', totalPrice);
+  }, [totalPrice]);
 
   useEffect(() => {
     if (formik.errors) {
