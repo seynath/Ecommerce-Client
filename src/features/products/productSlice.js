@@ -83,6 +83,16 @@ export const removeFromCartItem = createAsyncThunk(
   }
 );
 
+export const addReview = createAsyncThunk(
+  'product/addReview', async(reviewData ,thunkAPI) => {
+    try{
+      return await productService.addReview(reviewData);
+    }catch(error){
+      return thunkAPI.rejectWithValue(error.response.data);
+    }
+});
+
+
 
 
 const productState = {

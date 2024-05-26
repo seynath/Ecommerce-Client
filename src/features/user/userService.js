@@ -10,9 +10,9 @@ const register = async (userData) => {
   }
 }
 
-const login = async (userData) => {
+const login = async (values) => {
   try {
-    const response = await axios.post(`${base_url}user/login`, userData);
+    const response = await axios.post(`${base_url}user/login`, values);
   if (response.data) {
     localStorage.setItem("user", JSON.stringify(response.data));
     return response.data;
@@ -32,6 +32,9 @@ const createOrder = async (orderData)=>{
   }
 
 }
+
+
+
 
 export const authService = {
   register ,

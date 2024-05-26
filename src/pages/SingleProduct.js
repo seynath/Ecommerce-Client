@@ -19,57 +19,68 @@ import {
 import axios from "axios";
 import { base_url } from "../utils/axiosConfig";
 import { config } from "../utils/axiosConfig";
+import { addReview } from "../features/products/productSlice";
 
 const SingleProduct = () => {
   const user = useSelector((state) => state.auth.user);
-  console.log(user);
   const location = useLocation();
   const getProductId = location.pathname.split("/")[2];
-  const navigate=useNavigate()
+  const navigate = useNavigate();
   const dispatch = useDispatch();
-
-
 
   useEffect(() => {
     const fetchData = async () => {
-      if(user){
+      if (user) {
         await dispatch(getCart());
       }
-    }
-  
+    };
+
     fetchData();
   }, []);
-
-
 
   useEffect(() => {
     const fetchProductAndCart = async () => {
       await dispatch(getSingleProduct(getProductId));
+    
       if (user) {
         await dispatch(getCart());
         // const response = await axios.get(`${base_url}user/cart`, config)
-
       }
     };
-  
+
+    const getReviews = async () =>{
+      await axios.get(`${base_url}product/rating/${getProductId}`, config)
+      .then((response) => {
+        console.log(response.data);
+        setReviews(response.data);
+      })
+    }
+
     fetchProductAndCart();
+    getReviews()
   }, [dispatch, getProductId, user]);
   const { singleProduct } = useSelector((state) => state?.product);
 
-  // console.log({ singleProduct });
 
-  
+  console.log({ singleProduct });
 
   const initialPrice = singleProduct?.price;
+  
   // console.log(initialPrice);
 
-  const [orderedProduct, setorderedProduct] = useState(true);
+  const [orderedProduct, setOrderedProduct] = useState(false);
   const [quantity, setQuantity] = useState(1);
   const [color, setColor] = useState("");
   const [size, setSize] = useState("");
   const [price, setPrice] = useState(0);
   const [cartItems, setCartItems] = useState([]);
   const [userAvalable, setUserAvailable] = useState(false);
+  const [orders, setOrders] = useState([]);
+  const [orderProducts, setOrderProducts] = useState([]);
+  const [submitValue, setSubmitValue] = useState("");
+  const [submitStars, setSubmitStars] = useState(4);
+  const [reviewStars, setReviewStars] = useState(0);
+  const [reviews,setReviews] = useState([]);
 
   const handleColorChange = (colorCode) => {
     setColor(colorCode);
@@ -110,13 +121,11 @@ const SingleProduct = () => {
   }, [color, size, quantity]);
 
   const uploadCart = () => {
-
     if (!user) {
       // You can display an error message or perform any other action here
-      navigate("/login")
+      navigate("/login");
       return;
     }
-  
 
     if (color && size && quantity) {
       const selectedSizeColor = singleProduct?.size_color_quantity?.find(
@@ -138,6 +147,18 @@ const SingleProduct = () => {
       );
     }
   };
+
+  // const isOrdered = async() => {
+  //   if (user) {
+
+  //       await axios.get(`${base_url}user/checkIsOrdered/${getProductId}`, config)
+  //       .then((response) => {
+  //         console.log(response.data);
+  //         setOrderedProduct(response.data.isOrdered);
+  //       })
+  //   }
+  //   setOrderedProduct(false)
+  // }
 
   const uniqueSizes = singleProduct?.size_color_quantity
     ?.map((scq) => ({ size_id: scq.size_id, size_name: scq.size_name }))
@@ -168,6 +189,29 @@ const SingleProduct = () => {
   //   textField.remove();
   // };
   const closeModal = () => {};
+
+  const handleReviewSubmit = (submitValue) => {
+    if (user) {
+      console.log({
+        getProductId: getProductId,
+        id: user.id,
+        stars: submitStars,
+        review: submitValue,
+      });
+      dispatch(
+        addReview({
+          getProductId: getProductId,
+          id: user.id,
+          stars: submitStars,
+          review: submitValue,
+        })
+      );
+    }
+  };
+
+
+
+
 
   return (
     <>
@@ -211,11 +255,12 @@ const SingleProduct = () => {
                   <ReactStars
                     count={5}
                     size={24}
+                    // value={Number(reviewStars)}
                     value={Number(singleProduct?.total_rating)}
                     edit={false}
                     activeColor="#ffd700"
                   />
-                  <p className="mb-0 t-review">( 2 Reviews )</p>
+                  <p className="mb-0 t-review">{singleProduct?.total_rating}</p>
                 </div>
                 <a className="review-btn" href="#review">
                   Write a Review
@@ -240,6 +285,7 @@ const SingleProduct = () => {
                 </div> */}
                 <div className="d-flex gap-10 align-items-center my-2">
                   <h3 className="product-heading">Availablity :</h3>
+
                   <p className="product-data">{getSizeQuantity()} Items Left</p>
                 </div>
                 <div className="d-flex gap-10 flex-column mt-2 mb-3">
@@ -285,38 +331,37 @@ const SingleProduct = () => {
                   </div>
 
                   <div className="d-flex align-items-center gap-30 ms-5">
-                  
+                    {!user ? (
+                      <button
+                        className="button border-0 "
+                        type="button"
+                        onClick={() => {
+                          uploadCart();
+                        }}
+                      >
+                        Add to Cart
+                      </button>
+                    ) : (
+                      <button
+                        className="button border-0 "
+                        data-bs-toggle="modal"
+                        data-bs-target="#staticBackdrop"
+                        type="button"
+                        onClick={() => {
+                          uploadCart();
+                        }}
+                      >
+                        Add to Cart
+                      </button>
+                    )}
 
-                  {!user ? (
-                    <button
-                    
-                    className="button border-0 "
-                    type="button"
-                    onClick={() => {
-                      uploadCart();
-                    }}
-                  >
-                    Add to Cart
-                  </button>
-                  ):
-                  (
-                    <button
-                    
-                      className="button border-0 "
-                      data-bs-toggle="modal"
-                      data-bs-target="#staticBackdrop"
-                      type="button"
-                      onClick={() => {
-                        uploadCart();
-                      }}
-                    >
-                      Add to Cart
-                    </button>
-                  )}
-                    
-
-                    { !user ? <Link to={"/login"} className="button signup">Log In </Link> : <div></div>}
-
+                    {!user ? (
+                      <Link to={"/login"} className="button signup">
+                        Log In{" "}
+                      </Link>
+                    ) : (
+                      <div></div>
+                    )}
                   </div>
                 </div>
 
@@ -331,7 +376,6 @@ const SingleProduct = () => {
                       <AiOutlineHeart className="fs-5 me-2" /> Add to Wishlist
                     </a>
                   </div>
-
                 </div>
                 <div className="d-flex gap-10 flex-column  my-3">
                   <h3 className="product-heading">Shipping & Returns :</h3>
@@ -367,9 +411,8 @@ const SingleProduct = () => {
             <h4>Description</h4>
             <div className="bg-white p-3">
               <p
-              // dangerouslySetInnerHTML={{ __html: productState?.p_description }}
+              dangerouslySetInnerHTML={{ __html: singleProduct?.p_description}}
               >
-                {singleProduct?.p_description}
               </p>
             </div>
           </div>
@@ -383,7 +426,7 @@ const SingleProduct = () => {
           <div className="col-12">
             <h3 id="review">Reviews</h3>
             <div className="review-inner-wrapper">
-              <div className="review-head d-flex justify-content-between align-items-end">
+              {/* <div className="review-head d-flex justify-content-between align-items-end">
                 <div>
                   <h4 className="mb-2">Customer Reviews</h4>
                   <div className="d-flex align-items-center gap-10">
@@ -407,7 +450,8 @@ const SingleProduct = () => {
                     </a>
                   </div>
                 )}
-              </div>
+              </div> */}
+
               <div className="review-form py-4">
                 <h4>Write a Review</h4>
                 <form action="" className="d-flex flex-column gap-15">
@@ -415,9 +459,10 @@ const SingleProduct = () => {
                     <ReactStars
                       count={5}
                       size={24}
-                      value={4}
+                      value={submitStars}
                       edit={true}
                       activeColor="#ffd700"
+                      onChange={(newRating) => setSubmitStars(newRating)}
                     />
                   </div>
                   <div>
@@ -428,33 +473,50 @@ const SingleProduct = () => {
                       cols="30"
                       rows="4"
                       placeholder="Comments"
+                      value={submitValue}
+                      onChange={(e) => setSubmitValue(e.target.value)}
                     ></textarea>
                   </div>
                   <div className="d-flex justify-content-end">
-                    <button className="button border-0">Submit Review</button>
+                    <button
+                      type="button"
+                      className="button border-0"
+                      onClick={() => handleReviewSubmit(submitValue)}
+                    >
+                      Submit Review
+                    </button>
                   </div>
                 </form>
               </div>
+
+
               <div className="reviews mt-4">
-                <div className="review">
-                  <div className="d-flex gap-10 align-items-center">
-                    <h6 className="mb-0">XYZ</h6>
-                    <ReactStars
-                      count={5}
-                      size={24}
-                      value={4}
-                      edit={false}
-                      activeColor="#ffd700"
-                    />
-                  </div>
-                  <p className="mt-3">
-                    Lorem ipsum dolor sit amet consectetur, adipisicing elit.
-                    Consectetur fugit ut excepturi quos. Id reprehenderit
-                    voluptatem placeat consequatur suscipit ex. Accusamus dolore
-                    quisquam deserunt voluptate, sit magni perspiciatis quas
-                    iste?
-                  </p>
-                </div>
+
+                {
+                  reviews.length == 0 ? (
+                    <p>No Reviews Yet</p>
+                  ) : (
+                    reviews.map((review, index) => (
+                      <div className="review" key={index}>
+                        <div className="d-flex gap-10 align-items-center">
+                          <h6 className="mb-0">{review?.star}</h6>
+                          <ReactStars
+                            count={5}
+                            size={24}
+                            value={Number(review?.star)}
+                            edit={false}
+                            activeColor="#ffd700"
+                          />
+                        </div>
+                        <p className="mt-3">
+                          {review?.comment}
+                        </p>
+                      </div>
+                    ))
+                  )
+
+                }
+          
               </div>
             </div>
           </div>

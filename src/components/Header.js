@@ -8,8 +8,10 @@ import cartIcon from "../images/cart.svg";
 import menu from "../images/menu.svg";
 import { useSelector, useDispatch } from "react-redux";
 import { getCart, getWishlist } from "../features/products/productSlice";
+import axios from "axios";
+import { base_url } from "../utils/axiosConfig";
 const Header = () => {
-
+  const [categories,setCategories] = useState([])
   const dispatch = useDispatch();
   const user = useSelector((state) => state.auth.user);
 
@@ -19,16 +21,34 @@ const Header = () => {
 
   const [totalCart, setTotalCart] = useState(0);
 
-useEffect(() => {
-  const fetchData = async () => {
-    if(user){
-      await dispatch(getCart());
-      await dispatch(getWishlist());
-    }
-  }
+  useEffect(() => {
+    const fetchData = async () => {
+      if (user) {
+        await dispatch(getCart());
+        await dispatch(getWishlist());
 
-  fetchData();
-}, []);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const response = await axios.get(`${base_url}category/`);
+        // Do something with response
+        console.log(response.data);
+        setCategories(response.data);
+
+      } catch (error) {
+        console.error(error);
+      }
+    };
+  
+    fetchCategories();
+  }, []);
 
   useEffect(() => {
     if (cartState && cartState?.length > 0) {
@@ -47,7 +67,7 @@ useEffect(() => {
 
   return (
     <>
-      <header className="header-top-strip py-3">
+      {/* <header className="header-top-strip py-3">
         <div className="container-xxl">
           <div className="row">
             <div className="col-6">
@@ -65,8 +85,8 @@ useEffect(() => {
             </div>
           </div>
         </div>
-      </header>
-      <header className="header-upper py-3">
+      </header> */}
+      <header className="header-upper py-3 pt-4">
         <div className="container-xxl">
           <div className="row align-items-center">
             <div className="col-3">
@@ -92,17 +112,7 @@ useEffect(() => {
             </div>
             <div className="col-5">
               <div className="header-upper-links d-flex align-items-center gap-3 justify-content-end">
-                <div>
-                  <Link
-                    to="/compare-product"
-                    className="d-flex align-items-center gap-10 text-white"
-                  >
-                    <img src={compare} alt="compare" />
-                    {/* <p className="mb-0">
-                      Compare <br /> Products
-                    </p> */}
-                  </Link>
-                </div>
+        
                 <div>
                   {!user ? (
                     <Link
@@ -124,18 +134,71 @@ useEffect(() => {
                   )}
 
                   {/* Login */}
-               
                 </div>
                 <div>
-                  <Link
-                    to="/login"
-                    className="d-flex align-items-center gap-10 text-white"
-                  >
-                    <img src={userIcon} alt="user" />
-                    {/* <p className="mb-0">
+
+                  <div className="dropdown">
+                    <button
+                      className="btn btn-secondary dropdown-toggle bg-transparent border-0 gap-15 d-flex align-items-center"
+                      type="button"
+                      id="dropdownMenuButton1"
+                      data-bs-toggle="dropdown"
+                      aria-expanded="false"
+                    >
+                      <img src={userIcon} alt="user" />
+                    </button>
+                    <ul
+                      className="dropdown-menu"
+                      aria-labelledby="dropdownMenuButton1"
+                    >
+                    {user !== null ? (<>
+                      <li>
+                        <Link className="dropdown-item  text-dark" to="">
+                          My Account
+                        </Link>
+                      </li>
+                        <li>
+                          <Link
+                            to="/order"
+                            className=" dropdown-item  align-items-center text-dark"
+                          >
+                        
+                            My Orders
+                          </Link>
+                        </li>
+                        <li>
+                          <button
+                            to="/logout"
+                            className=" dropdown-item  align-items-center text-dark "
+                            onClick={() => {
+                              // Remove the user and tokens from local storage
+                              localStorage.removeItem('user');
+                              localStorage.removeItem('token');
+                          
+                              // Refresh the page
+                              window.location.reload();
+                            }}
+                          >
+                        
+                            Log Out
+                          </button>
+                        </li>
+                        </>
+                      ) : (
+                        <li>
+                          <Link
+                            to="/login"
+                            className=" dropdown-item  align-items-center text-dark"
+                          >
+                            {/* <p className="mb-0">
                       Log in <br /> My Account
                     </p> */}
-                  </Link>
+                            Login
+                          </Link>
+                        </li>
+                      )}
+                    </ul>
+                  </div>
                 </div>
 
                 {/* Cart */}
@@ -194,7 +257,18 @@ useEffect(() => {
                       className="dropdown-menu"
                       aria-labelledby="dropdownMenuButton1"
                     >
-                      <li>
+                      {(categories.length !== 0) && categories.map((category, index) => (
+                        <li key={index}>
+                          <Link
+                            className="dropdown-item text-white"
+                            to={`/category/${category.cat_id}`}
+                          >
+                            {category.cat_name}
+                          </Link>
+                        </li>
+                      ))}
+                    </ul>
+                      {/* <li>
                         <Link className="dropdown-item text-white" to="">
                           Action
                         </Link>
@@ -209,14 +283,13 @@ useEffect(() => {
                           Something else here
                         </Link>
                       </li>
-                    </ul>
+                    </ul> */}
                   </div>
                 </div>
                 <div className="menu-links">
-                  <div className="d-flex align-items-center gap-15">
+                  <div className="d-flex align-items-center gap-15 ">
                     <NavLink to="/">Home</NavLink>
                     <NavLink to="/product">Our Store</NavLink>
-                    <NavLink to="/blogs">Blogs</NavLink>
                     <NavLink to="/contact">Contact</NavLink>
                   </div>
                 </div>

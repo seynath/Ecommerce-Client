@@ -7,21 +7,28 @@ import Color from "../components/Color";
 import Container from "../components/Container";
 import { useDispatch, useSelector } from "react-redux";
 import { getAllProducts, getWishlist } from "../features/products/productSlice";
+import { useLocation } from "react-router-dom";
 
-const OurStore = () => {
+const CategoryProducts = () => {
   const [grid, setGrid] = useState(4);
+
   const dispatch = useDispatch();
+  const location = useLocation();
+  
+
+  const getaCategoryId = location.pathname.split("/")[2];
+
+  console.log(getaCategoryId);
+
+
 
   const productState = useSelector((state) => state.product.product)
   const user = useSelector((state) => state?.auth?.user);
 
 
-    // Check if user is not null before destructuring id
-    // if (user !== null) {
-    //   const {id} = user;
-      // console.log(id);
-      // console.log(user);
-    // }
+  const filteredProducts = productState?.filter((product) =>( product.category_id == getaCategoryId));
+
+
 
   useEffect(() => {
     getproducts();
@@ -29,17 +36,12 @@ const OurStore = () => {
 
   const getproducts = () => {
     dispatch(getAllProducts())
-    // if (user !== null) {
-    //   dispatch(getWishlist(user.id)) // Assuming getWishlist needs userId
-    // }
+    
   }
-  
 
-  // const getAllWishlistProducta = () => {
-  //   dispatch(getWishlist())
-  // }
 
   console.log({ productState });
+  console.log({ filteredProducts });
 
   return (
     <>
@@ -48,17 +50,6 @@ const OurStore = () => {
       <Container class1="store-wrapper home-wrapper-2 py-5">
         <div className="row">
           <div className="col-3">
-            {/* <div className="filter-card mb-3">
-              <h3 className="filter-title">Shop By Categories</h3>
-              <div>
-                <ul className="ps-0">
-                  <li>Watch</li>
-                  <li>Tv</li>
-                  <li>Camera</li>
-                  <li>Laptop</li>
-                </ul>
-              </div>
-            </div> */}
             <div className="filter-card mb-3">
               <h3 className="filter-title">Filter By</h3>
               <div>
@@ -275,7 +266,7 @@ const OurStore = () => {
             </div>
             <div className="products-list pb-5">
               <div className="d-flex gap-10 flex-wrap">
-                <ProductCard data={productState}  grid={grid} />
+                <ProductCard data={filteredProducts}  grid={grid} />
               </div>
             </div>
           </div>
@@ -285,4 +276,4 @@ const OurStore = () => {
   );
 };
 
-export default OurStore;
+export default CategoryProducts;

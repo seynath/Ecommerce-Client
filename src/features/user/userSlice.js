@@ -31,6 +31,9 @@ export const createOrder = createAsyncThunk(
 });
 
 
+
+
+
 // export const loginUser = createAsyncThunk(
 //   'auth/login', async(userData ,thunkAPI) => {
 //     try{
@@ -45,9 +48,9 @@ export const createOrder = createAsyncThunk(
 
 export const loginUser = createAsyncThunk(
   'auth/login', 
-  async (userData , {dispatch, rejectWithValue}) => {
+  async (values , {dispatch, rejectWithValue}) => {
     try{
-      const response = await authService.login(userData);
+      const response = await authService.login(values);
       if (response) {
         dispatch(getCart());
       }

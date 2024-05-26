@@ -72,6 +72,14 @@ const removeFromCartItem = async (cartItemId) => {
   }
 }
 
+const addReview = async (reviewData) => {
+  try{
+    return await axios.post(`${base_url}product/rating`, reviewData, config);
+  } catch(error) {
+    return error.response.data.message;
+  }
+}
+
 
 
 export const productService = {
@@ -81,5 +89,6 @@ export const productService = {
   getSingleProduct,
   addToCart,
   getCart,
-  removeFromCartItem
+  removeFromCartItem,
+  addReview
 };

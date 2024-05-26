@@ -124,40 +124,7 @@ const Checkout = () => {
     }
   }, [formik.errors]);
 
-  // const syncBillingAddress = () => {
-  //   if (isBillingSame) {
-  //     if (!formik.values.billingAptNo) {
-  //       formik.setFieldValue("billingAptNo", formik.values.shippingAptNo);
-  //     }
-  //     if (!formik.values.billingAddress) {
-  //       formik.setFieldValue("billingAddress", formik.values.shippingAddress);
-  //     }
-  //     if (!formik.values.billingCity) {
-  //       formik.setFieldValue("billingCity", formik.values.shippingCity);
-  //     }
-  //     if (!formik.values.billingState) {
-  //       formik.setFieldValue("billingState", formik.values.shippingState);
-  //     }
-  //     if (!formik.values.billingZipcode) {
-  //       formik.setFieldValue("billingZipcode", formik.values.shippingZipcode);
-  //     }
-  //     if (!formik.values.billingCountry) {
-  //       formik.setFieldValue("billingCountry", formik.values.shippingCountry);
-  //     }
-  //   } else {
-  //     formik.setFieldValue("billingAptNo", "");
-  //     formik.setFieldValue("billingAddress", "");
-  //     formik.setFieldValue("billingCity", "");
-  //     formik.setFieldValue("billingState", "");
-  //     formik.setFieldValue("billingZipcode", "");
-  //     formik.setFieldValue("billingCountry", "");
-  //   }
-  // };
-
-  // useEffect(() => {
-  //   syncBillingAddress();
-  // }, [isBillingSame, formik.values]);
-
+ 
   return (
     <>
       <Meta title={"Checkout"} />

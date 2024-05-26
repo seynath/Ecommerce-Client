@@ -24,9 +24,7 @@ const navigate = useNavigate();
 
 
   const schema = Yup.object().shape({
-    email: Yup.string()
-      .email("Invalid email address")
-      .required("Email is required"),
+    email: Yup.string().email("Invalid email address").required("Email is required"),
     password: Yup.string().min(8).required("Password is required"),
   });
 

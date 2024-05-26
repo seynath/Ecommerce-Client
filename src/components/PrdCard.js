@@ -77,6 +77,7 @@ const PrdCard = (props) => {
           >
             {/* <img src={wish} alt="wishlist" /> */}
             <FaHeart
+            className="z-3"
               // color={wishlistState?.includes(product?.p_id) ? "blue" : "red"}
               color={
                 wishlistProductIds.includes(data?.p_id) ? "red" : "gray"

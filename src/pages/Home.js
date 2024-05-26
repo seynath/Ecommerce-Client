@@ -8,6 +8,7 @@ import Container from "../components/Container";
 import { services } from "../utils/Data";
 import { useDispatch, useSelector } from "react-redux";
 import { getCart, getWishlist } from "../features/products/productSlice";
+import Hero from "../components/Hero";
 
 const Home = () => {
 
@@ -29,7 +30,8 @@ const Home = () => {
  
   return (
     <>
-      <Container class1="home-wrapper-1 py-5">
+    <Hero/>
+      {/* <Container class1="home-wrapper-1 py-5">
         <div className="row">
           <div className="col-6">
             <div className="main-banner position-relative ">
@@ -107,7 +109,7 @@ const Home = () => {
             </div>
           </div>
         </div>
-      </Container>
+      </Container> */}
       <Container class1="home-wrapper-2 py-5">
         <div className="row">
           <div className="col-12">
@@ -329,7 +331,7 @@ const Home = () => {
         </div>
       </Container>
 
-      <Container class1="blog-wrapper py-5 home-wrapper-2">
+      {/* <Container class1="blog-wrapper py-5 home-wrapper-2">
         <div className="row">
           <div className="col-12">
             <h3 className="section-heading">Our Latest Blogs</h3>
@@ -349,7 +351,7 @@ const Home = () => {
             <BlogCard />
           </div>
         </div>
-      </Container>
+      </Container> */}
     </>
   );
 };

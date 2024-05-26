@@ -64,19 +64,9 @@ const ProductCard = (props) => {
               } `}
             >
               <div
-                // to={`${
-                //   location.pathname === "/"
-                //     ? "/product/:id"
-                //     : location.pathname === "/product/:id"
-                //     ? "/product/:id"
-                //     : ":id"
-                // }`}
+          
                 className="product-card position-relative"
               >
-
-
-
-
                 <div className="wishlist-icon position-absolute">
                   <button
                     className="border-0 bg-transparent"
@@ -97,33 +87,24 @@ const ProductCard = (props) => {
                   </button>
                 </div>
                 <div className="action-bar position-absolute">
-                    <div className="d-flex flex-column gap-15">
-                      <button className="border-0 bg-transparent">
-                        <img src={prodcompare} alt="compare" />
-                      </button>
-                      <button className="border-0 bg-transparent">
-                        <img src={view} alt="view" />
-                      </button>
-                      <button className="border-0 bg-transparent">
-                        <img src={addcart} alt="addcart" />
-                      </button>
-                    </div>
+                  <div className="d-flex flex-column gap-15">
+                    <button className="border-0 bg-transparent">
+                      <img src={prodcompare} alt="compare" />
+                    </button>
+                    <button className="border-0 bg-transparent">
+                      <img src={view} alt="view" />
+                    </button>
+                    <button className="border-0 bg-transparent">
+                      <img src={addcart} alt="addcart" />
+                    </button>
                   </div>
+                </div>
 
-
-
-
-
-
-
-<Link                 
-to={`/product/${product?.p_id}`}
->
-  
+                <Link to={`/product/${product?.p_id}`}>
                   <div className="product-image">
                     <img
                       src={product?.image_link}
-                      className="img-fluid"
+                      className="img-fluid img-thumbnail"
                       alt="product_image"
                     />
                     <img
@@ -147,12 +128,13 @@ to={`/product/${product?.p_id}`}
                       className={`description ${
                         grid === 12 ? "d-block" : "d-none"
                       }`}
-                      dangerouslySetInnerHTML={{ __html: product?.p_description }}
+                      dangerouslySetInnerHTML={{
+                        __html: product?.p_description,
+                      }}
                     ></p>
                     <p className="price">Rs {product?.price}</p>
-                    
                   </div>
-</Link>
+                </Link>
               </div>
             </div>
           );
