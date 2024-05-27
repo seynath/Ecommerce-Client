@@ -16,9 +16,7 @@ const Hero = () => {
           </div>
         </div>
       </div>
-      <a href="https://componentity.com" target="_blank" className="block">
-        <img src="http://codenawis.com/componentity/wp-content/uploads/2020/08/logo-componentity-%E2%80%93-9.png" width="120px" className="d-block mx-auto my-5"/>
-      </a>
+     
     </div>
   );
 };
