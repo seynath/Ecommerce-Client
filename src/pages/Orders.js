@@ -94,11 +94,11 @@ const Orders = () => {
       title: "View Ordered Products",
       dataIndex: "view_ordered_products",
       key: "view_ordered_products",
-      render: (text, record) => (
-        <Button type="primary" onClick={() => showOrderedProducts(record)}>
-          View Ordered Products
-        </Button>
-      ),
+      // render: (text, record) => (
+      //   <Button type="primary" onClick={() => showOrderedProducts(record)}>
+      //     View Ordered Products
+      //   </Button>
+      // ),
     },
   ];
   useEffect(() => {
@@ -145,13 +145,13 @@ const Orders = () => {
 
   const handleOk = () => {
     setIsModalOpen(false);
+
   };
 
   const handleCancel = () => {
     setIsModalOpen(false);
   };
 
- 
   const data1 =
     orders &&
     orders.map((order) => ({
@@ -170,9 +170,10 @@ const Orders = () => {
       total_amount: order.total_amount,
 
       action: (
-        <>
-          <Button
-            type="primary"
+        <div className="d-flex">
+          <button
+            type=""
+            className="button border-0"
             onClick={() =>
               showModal({
                 ...selectedOrder,
@@ -191,10 +192,11 @@ const Orders = () => {
             }
           >
             View Details
-          </Button>
+          </button>
 
-          <Button
-            type="primary"
+          <button
+            type=""
+            className="button border-0 mx-1"
             onClick={async () => {
               setOrder_ID(order.order_id);
               setEnquiry(""); // Reset enquiry when opening the modal
@@ -204,13 +206,17 @@ const Orders = () => {
             }}
           >
             Enquiry
-          </Button>
-        </>
+          </button>
+        </div>
       ),
       view_ordered_products: (
-        <Button type="primary" onClick={() => showOrderedProducts(order)}>
+        <button
+          type=""
+          className="button border-0"
+          onClick={() => showOrderedProducts(order)}
+        >
           View Ordered Products
-        </Button>
+        </button>
       ),
     }));
 
@@ -284,6 +290,7 @@ const Orders = () => {
       <Modal
         title="Enquiry"
         visible={isModalVisible}
+        okText="Submit Enquiry"
         onOk={() => handleEnquirySubmit(enquiry, order_ID)}
         onCancel={() => setIsModalVisible(false)}
       >
@@ -297,7 +304,12 @@ const Orders = () => {
 
           {enquiryHistory &&
             enquiryHistory.map((enquiry) => (
-              <li key={enquiry.enquiry_id}><div className="d-flex justify-content-between" ><span>{enquiry.message} </span><span>|   {enquiry.enquiry_status}</span></div></li>
+              <li key={enquiry.enquiry_id}>
+                <div className="d-flex justify-content-between">
+                  <span>{enquiry.message} </span>
+                  <span>| {enquiry.enquiry_status}</span>
+                </div>
+              </li>
             ))}
         </ul>
       </Modal>

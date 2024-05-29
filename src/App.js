@@ -22,6 +22,7 @@ import { PrivateRoute } from "./routes/PrivateRoute";
 import { OpenRoute } from "./routes/OpenRoute";
 import Orders from "./pages/Orders";
 import CategoryProducts from "./pages/CategoryProducts";
+import Profile from "./pages/Profile";
 function App() {
   return (
     <>
@@ -41,7 +42,8 @@ function App() {
             <Route path="login" element={<OpenRoute><Login /></OpenRoute>} />
             <Route path="signup" element={<OpenRoute><Signup /></OpenRoute>} />
             <Route path="forgot-password" element={<Forgotpassword />} />
-            <Route path="reset-password" element={<Resetpassword />} />
+            <Route path="reset-password/:token" element={<Resetpassword />} />
+            <Route path="profile" element={<PrivateRoute><Profile/></PrivateRoute>} />
             <Route path="privacy-policy" element={<PrivacyPolicy />} />
             <Route path="refund-policy" element={<RefundPloicy />} />
             <Route path="shipping-policy" element={<ShippingPolicy />} />

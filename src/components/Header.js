@@ -153,7 +153,7 @@ const Header = () => {
                     >
                     {user !== null ? (<>
                       <li>
-                        <Link className="dropdown-item  text-dark" to="">
+                        <Link className="dropdown-item  text-dark" to="/profile">
                           My Account
                         </Link>
                       </li>
