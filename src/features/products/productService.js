@@ -4,7 +4,6 @@ import { base_url, config } from '../../utils/axiosConfig';
 const getAllProducts = async () => {
   try {
     const response =  await axios.get(`${base_url}product`);
-    console.log(response.data);
     return response.data;
   } catch (error) {
     return error.response.data.message;

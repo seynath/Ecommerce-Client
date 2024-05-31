@@ -14,31 +14,22 @@ const CategoryProducts = () => {
 
   const dispatch = useDispatch();
   const location = useLocation();
-  
 
   const getaCategoryId = location.pathname.split("/")[2];
 
-  console.log(getaCategoryId);
-
-
-
-  const productState = useSelector((state) => state.product.product)
+  const productState = useSelector((state) => state?.product?.product);
   const user = useSelector((state) => state?.auth?.user);
 
-
-  const filteredProducts = productState?.filter((product) =>( product.category_id == getaCategoryId));
-
-
-
+  const filteredProducts = Array.isArray(productState)
+    ? productState?.filter((product) => product.category_id == getaCategoryId)
+    : [];
   useEffect(() => {
     getproducts();
   }, []);
 
   const getproducts = () => {
-    dispatch(getAllProducts())
-    
-  }
-
+    dispatch(getAllProducts());
+  };
 
   console.log({ productState });
   console.log({ filteredProducts });
@@ -171,7 +162,7 @@ const CategoryProducts = () => {
                       edit={false}
                       activeColor="#ffd700"
                     />
-                    <b>Rs  300</b>
+                    <b>Rs 300</b>
                   </div>
                 </div>
                 <div className="random-products d-flex">
@@ -193,7 +184,7 @@ const CategoryProducts = () => {
                       edit={false}
                       activeColor="#ffd700"
                     />
-                    <b>Rs  300</b>
+                    <b>Rs 300</b>
                   </div>
                 </div>
               </div>
@@ -266,7 +257,10 @@ const CategoryProducts = () => {
             </div>
             <div className="products-list pb-5">
               <div className="d-flex gap-10 flex-wrap">
-                <ProductCard data={filteredProducts}  grid={grid} />
+                {(filteredProducts) && (
+                  <ProductCard data={filteredProducts} grid={grid} />)
+              
+                 }
               </div>
             </div>
           </div>

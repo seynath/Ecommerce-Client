@@ -82,9 +82,9 @@ export const authSlice  = createSlice({
       state.isError = false;
       state.isSuccess= true;
       state.createUser = action.payload;
-      if(state.isSuccess === true){
-        toast.info("Registration Successful");
-      }
+      // if(state.isSuccess === true){
+      //   toast.info("Registration Successful");
+      // }
       // state.user = action.payload;
     })
     .addCase(registerUser.rejected, (state, action) => {
@@ -106,10 +106,7 @@ export const authSlice  = createSlice({
         state.isError = false;
         state.isSuccess= true;
         state.user = action.payload;
-        if(state.isSuccess === true){
-          localStorage.setItem("token", action.payload.token)
-          toast.info("Login Successful");
-        }
+       
         // state.user = action.payload;
       })
       .addCase(loginUser.rejected, (state, action) => {
@@ -117,9 +114,9 @@ export const authSlice  = createSlice({
           state.isError = true;
           state.isSuccess= false;
           state.message = action.payload;
-          if(state.isError === true){
-            toast.error("Server Error, Please try again later");
-          }
+          // if(state.isError === true){
+          //   toast.error("Server Error, Please try again later");
+          // }
         })
       
         .addCase(createOrder.pending, (state) => {

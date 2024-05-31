@@ -19,9 +19,10 @@ const ProductCard = (props) => {
   const { data, grid } = props;
   const dispatch = useDispatch();
 
-  const user = useSelector((state) => state?.auth?.user);
-
   let location = useLocation();
+  const user = useSelector((state) => state?.auth?.user);
+  const wishlistState = useSelector((state) => state?.product?.getWishlist);
+
 
   useEffect(() => {
     if (user && user.id) {
@@ -29,7 +30,6 @@ const ProductCard = (props) => {
     }
   }, [dispatch]);
 
-  const wishlistState = useSelector((state) => state?.product?.getWishlist);
   console.log({ wishlistState });
 
   const addWishlist = (productId) => {
@@ -39,22 +39,14 @@ const ProductCard = (props) => {
     }, 500);
   };
 
-  // const wishlistProductIds = wishlistState?.map(item => item.product_id);
   const wishlistProductIds = Array.isArray(wishlistState)
     ? wishlistState.map((item) => item.product_id)
     : [];
 
-  // const addToCart = (productId) => {
-  //   dispatch(addToCart(productId));
-  // };
-
-  // const addToCompare = (productId) => {
-  //   dispatch(addToCompare(productId));
-  // };
-
   return (
     <>
-      {data &&
+      {Array.isArray(data) ?(
+        data &&
         data?.map((product, index) => {
           return (
             <div
@@ -63,11 +55,11 @@ const ProductCard = (props) => {
                 location.pathname === "/product" ? `gr-${grid}` : "col-3"
               } `}
             >
-              <div
-          
-                className="product-card position-relative"
-              >
+              <div className="product-card position-relative">
                 <div className="wishlist-icon position-absolute">
+
+                  {
+                    user && 
                   <button
                     className="border-0 bg-transparent"
                     onClick={(e) => {
@@ -85,6 +77,7 @@ const ProductCard = (props) => {
                       // color={wishlistState.product_id.includes(product?.p_id) ? "red" : "blue"}
                     />
                   </button>
+                  }
                 </div>
                 <div className="action-bar position-absolute">
                   <div className="d-flex flex-column gap-15">
@@ -138,67 +131,12 @@ const ProductCard = (props) => {
               </div>
             </div>
           );
-        })}
+        })
+      ) : (
+        <div>No Products</div>
+      )}
 
-      {/* <div
-        className={` ${
-          location.pathname == "/product" ? `gr-${grid}` : "col-3"
-        } `}
-      >
-        <Link
-          to={`${
-            location.pathname == "/"
-              ? "/product/:id"
-              : location.pathname == "/product/:id"
-              ? "/product/:id"
-              : ":id"
-          }`}
-          className="product-card position-relative"
-        >
-          <div className="wishlist-icon position-absolute">
-            <button className="border-0 bg-transparent">
-              <img src={wish} alt="wishlist" />
-            </button>
-          </div>
-          <div className="product-image">
-            <img src={watch} className="img-fluid" alt="product image" />
-            <img src={watch2} className="img-fluid" alt="product image" />
-          </div>
-          <div className="product-details">
-            <h6 className="brand">Havels</h6>
-            <h5 className="product-title">
-              Kids headphones bulk 10 pack multi colored for students
-            </h5>
-            <ReactStars
-              count={5}
-              size={24}
-              value={4}
-              edit={false}
-              activeColor="#ffd700"
-            />
-            <p className={`description ${grid === 12 ? "d-block" : "d-none"}`}>
-              At vero eos et accusamus et iusto odio dignissimos ducimus qui
-              blanditiis praesentium voluptatum deleniti atque corrupti quos
-              dolores et quas molestias excepturi sint occaecati cupiditate non
-              provident, similique sunt...
-            </p>
-            <p className="price">$100.00</p>
-          </div>
-          <div className="action-bar position-absolute">
-            <div className="d-flex flex-column gap-15">
-              <button className="border-0 bg-transparent">
-                <img src={prodcompare} alt="compare" />
-              </button>
-              <button className="border-0 bg-transparent">
-                <img src={view} alt="view" />
-              </button>
-              <button className="border-0 bg-transparent">
-                <img src={addcart} alt="addcart" />
-              </button>
-            </div>
-          </div>
-        </Link>
-      </div> */}
+
     </>
   );
 };

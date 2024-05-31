@@ -17,9 +17,6 @@ const Cart = () => {
   const [cartItems, setCartItems] = useState([]);
   const [totalPrice, setTotalPrice] = useState(0);
 
-  // useEffect(() => {
-  //   dispatch(getCart());
-  // }, [dispatch]);
 
   useEffect(() => {
     dispatch(getCart())
@@ -36,14 +33,6 @@ const Cart = () => {
 
   const loadState = useSelector((state) => state?.product?.isLoading);
 
-  // useEffect(() => {
-  //   setCartItems(cart);
-  //   let price = 0;
-  //   cart?.forEach((item) => {
-  //     price += Number(item?.productDetails?.unit_price) * item?.quantity;
-  //   });
-  //   setTotalPrice(price);
-  // }, [cart]);
   useEffect(() => {
     setCartItems(cart);
     let price = 0;
@@ -53,7 +42,17 @@ const Cart = () => {
       }
     });
     setTotalPrice(price);
-  }, []);
+  }, [cart]); // Recalculate total price whenever cart changes
+  // useEffect(() => {
+  //   setCartItems(cart);
+  //   let price = 0;
+  //   cart?.forEach((item) => {
+  //     if (item?.productDetails) { // add null check for item?.productDetails
+  //       price += Number(item?.productDetails?.unit_price) * item?.quantity;
+  //     }
+  //   });
+  //   setTotalPrice(price);
+  // }, [totalPrice]);
   
 
   const handleQuantityChange = async (
@@ -76,6 +75,7 @@ const Cart = () => {
 
     // Optimistically update the local state
     setCartItems((prevCartItems) => {
+      
       // Find the item to update and update its quantity
       const updatedCartItems = prevCartItems.map((item) =>
         item.size_color_quantity_id === size_color_quantity_id
@@ -112,10 +112,6 @@ const Cart = () => {
     }
   };
 
-  // const handleQuantityChange = async (size_color_quantity_id, quantity, product_total) => {
-  //   await dispatch(addToCart({size_color_quantity_id, quantity, product_total}));
-  //   dispatch(getCart());
-  // };
   const handleRemoveFromCartItem = (x) => {
     dispatch(removeFromCartItem(x));
     setTimeout(() => {
@@ -137,7 +133,6 @@ const Cart = () => {
               <h4 className="cart-col-4">Total</h4>
             </div>
 
-            <div>Updateing</div>
             <div>
               {Array.isArray(cart) && cart.length > 0 && 
                 cart?.map((item, index) => (

@@ -7,37 +7,43 @@ import Color from "../components/Color";
 import Container from "../components/Container";
 import { useDispatch, useSelector } from "react-redux";
 import { getAllProducts, getWishlist } from "../features/products/productSlice";
+import axios from "axios";
+import { base_url } from "../utils/axiosConfig";
 
 const OurStore = () => {
   const [grid, setGrid] = useState(4);
+  // const [productState,setProducts] = useState([]);
   const dispatch = useDispatch();
 
   const productState = useSelector((state) => state.product.product)
   const user = useSelector((state) => state?.auth?.user);
+  // console.log(productState);
 
 
-    // Check if user is not null before destructuring id
-    // if (user !== null) {
-    //   const {id} = user;
-      // console.log(id);
-      // console.log(user);
+
+    // const fetchProducts = async () => {
+  
+    //     await axios.get(`${base_url}product/`)
+    //     .then((res)=>{
+    //       console.log(res.data);
+    //       setProducts(res.data);
+    //     }
+    //     ).catch(
+    //       (error)=>{
+    //         console.log(error);
+    //       }
+    //     )
     // }
 
   useEffect(() => {
     getproducts();
+    // fetchProducts()
   }, []);
 
   const getproducts = () => {
     dispatch(getAllProducts())
-    // if (user !== null) {
-    //   dispatch(getWishlist(user.id)) // Assuming getWishlist needs userId
-    // }
   }
   
-
-  // const getAllWishlistProducta = () => {
-  //   dispatch(getWishlist())
-  // }
 
   console.log({ productState });
 

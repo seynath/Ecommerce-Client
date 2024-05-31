@@ -41,31 +41,31 @@ const SingleProduct = () => {
   useEffect(() => {
     const fetchProductAndCart = async () => {
       await dispatch(getSingleProduct(getProductId));
-    
+
       if (user) {
         await dispatch(getCart());
         // const response = await axios.get(`${base_url}user/cart`, config)
       }
     };
 
-    const getReviews = async () =>{
-      await axios.get(`${base_url}product/rating/${getProductId}`, config)
-      .then((response) => {
-        console.log(response.data);
-        setReviews(response.data);
-      })
-    }
+    const getReviews = async () => {
+      await axios
+        .get(`${base_url}product/rating/${getProductId}`, config)
+        .then((response) => {
+          console.log(response.data);
+          setReviews(response.data);
+        });
+    };
 
     fetchProductAndCart();
-    getReviews()
+    getReviews();
   }, [dispatch, getProductId, user]);
   const { singleProduct } = useSelector((state) => state?.product);
-
 
   console.log({ singleProduct });
 
   const initialPrice = singleProduct?.price;
-  
+
   // console.log(initialPrice);
 
   const [orderedProduct, setOrderedProduct] = useState(false);
@@ -80,7 +80,7 @@ const SingleProduct = () => {
   const [submitValue, setSubmitValue] = useState("");
   const [submitStars, setSubmitStars] = useState(4);
   const [reviewStars, setReviewStars] = useState(0);
-  const [reviews,setReviews] = useState([]);
+  const [reviews, setReviews] = useState([]);
 
   const handleColorChange = (colorCode) => {
     setColor(colorCode);
@@ -148,18 +148,6 @@ const SingleProduct = () => {
     }
   };
 
-  // const isOrdered = async() => {
-  //   if (user) {
-
-  //       await axios.get(`${base_url}user/checkIsOrdered/${getProductId}`, config)
-  //       .then((response) => {
-  //         console.log(response.data);
-  //         setOrderedProduct(response.data.isOrdered);
-  //       })
-  //   }
-  //   setOrderedProduct(false)
-  // }
-
   const uniqueSizes = singleProduct?.size_color_quantity
     ?.map((scq) => ({ size_id: scq.size_id, size_name: scq.size_name }))
     .filter(
@@ -208,10 +196,6 @@ const SingleProduct = () => {
       );
     }
   };
-
-
-
-
 
   return (
     <>
@@ -371,11 +355,11 @@ const SingleProduct = () => {
                       <TbGitCompare className="fs-5 me-2" /> Add to Compare
                     </a>
                   </div> */}
-                  <div>
+                  {/* <div>
                     <a href="##">
                       <AiOutlineHeart className="fs-5 me-2" /> Add to Wishlist
                     </a>
-                  </div>
+                  </div> */}
                 </div>
                 <div className="d-flex gap-10 flex-column  my-3">
                   <h3 className="product-heading">Shipping & Returns :</h3>
@@ -411,9 +395,10 @@ const SingleProduct = () => {
             <h4>Description</h4>
             <div className="bg-white p-3">
               <p
-              dangerouslySetInnerHTML={{ __html: singleProduct?.p_description}}
-              >
-              </p>
+                dangerouslySetInnerHTML={{
+                  __html: singleProduct?.p_description,
+                }}
+              ></p>
             </div>
           </div>
         </div>
@@ -489,34 +474,26 @@ const SingleProduct = () => {
                 </form>
               </div>
 
-
               <div className="reviews mt-4">
-
-                {
-                  reviews.length == 0 ? (
-                    <p>No Reviews Yet</p>
-                  ) : (
-                    reviews.map((review, index) => (
-                      <div className="review" key={index}>
-                        <div className="d-flex gap-10 align-items-center">
-                          <h6 className="mb-0">{review?.star}</h6>
-                          <ReactStars
-                            count={5}
-                            size={24}
-                            value={Number(review?.star)}
-                            edit={false}
-                            activeColor="#ffd700"
-                          />
-                        </div>
-                        <p className="mt-3">
-                          {review?.comment}
-                        </p>
+                {reviews.length == 0 ? (
+                  <p>No Reviews Yet</p>
+                ) : (
+                  reviews.map((review, index) => (
+                    <div className="review" key={index}>
+                      <div className="d-flex gap-10 align-items-center">
+                        <h6 className="mb-0">{review?.star}</h6>
+                        <ReactStars
+                          count={5}
+                          size={24}
+                          value={Number(review?.star)}
+                          edit={false}
+                          activeColor="#ffd700"
+                        />
                       </div>
-                    ))
-                  )
-
-                }
-          
+                      <p className="mt-3">{review?.comment}</p>
+                    </div>
+                  ))
+                )}
               </div>
             </div>
           </div>
@@ -568,12 +545,35 @@ const SingleProduct = () => {
               </div>
             </div>
             <div className="modal-footer border-0 py-0 justify-content-center gap-30">
-              <button type="button" className="button" data-bs-dismiss="modal">
-                View My Cart
-              </button>
-              <button type="button" className="button signup">
-                Checkout
-              </button>
+              <div
+                className="w-100"
+                to={"/product"}
+                onClick={() => {
+                  closeModal()
+                  window.location.replace("/")
+                }}
+              >
+                <button
+                  type="button"
+                  className="button w-100"
+                  data-bs-dismiss="modal"
+                >
+                  Continue Shopping
+                </button>
+              </div>
+              <div
+                className="w-100"
+                // to="/cart"
+
+                onClick={() => {
+                  closeModal()
+                  window.location.replace("/cart")
+                }}
+              >
+                <button type="button" className="button signup w-100">
+                  Cart
+                </button>
+              </div>
             </div>
             <div className="d-flex justify-content-center py-3">
               <Link

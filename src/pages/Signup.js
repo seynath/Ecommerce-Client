@@ -1,7 +1,7 @@
 import React from "react";
 import BreadCrumb from "../components/BreadCrumb";
 import Meta from "../components/Meta";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Container from "../components/Container";
 import CustomInput from "../components/CustomInput";
 import { useFormik } from "formik";
@@ -9,11 +9,16 @@ import * as Yup from "yup";
 import { useDispatch } from "react-redux";
 import {toast} from "react-toastify";
 import {registerUser} from "../features/user/userSlice";
+import { base_url } from "../utils/axiosConfig";
+import axios from "axios";
+import { useState } from "react";
+
 
 
 
 const Signup = () => {
 const dispatch = useDispatch();
+const navigate = useNavigate()
 
   const schema = Yup.object().shape({
     firstname: Yup.string().min(3).required("Name is required"),
@@ -21,17 +26,47 @@ const dispatch = useDispatch();
     email: Yup.string()
       .email("Invalid email address")
       .required("Email is required"),
+
     // mobile: Yup.number()
-    //   .min(10)
-    //   .max(10)
-    //   .positive()
-    //   .required("Mobile number is required"),
-    mobile: Yup.string()
-    .test('len', 'Mobile number must be exactly 10 digits', (val) => val && val.toString().length === 10)
-    .test('is-positive-integer', 'Mobile number must be a positive integer', (val) => val && /^\d+$/.test(val))
-    .required('Mobile number is required'),
+    // .test('len', 'Mobile number must be exactly 10 digits', (val) => val && val.toString().length === 10)
+    // .test('is-positive-integer', 'Mobile number must be a positive integer', (val) => val && /^\d+$/.test(val))
+    // .required('Mobile number is required'),
+    mobile: Yup.string().required("Mobile number is required")
+.matches(
+      /^[0-9]{10}$/,
+      "Mobile number must be exactly 10 digits"
+    )
+    .test(
+      "is-positive-integer",
+      "Mobile number must be a positive integer",
+      (val) => val && /^\d+$/.test(val)
+    ),
+
     password: Yup.string().min(8).required("Password is required"),
   });
+
+  const registerUser =async(values) =>{
+      axios.post(`${base_url}user/register`, values)
+      .then(
+        (res)=>{
+          if(res.status == 201){
+            toast.success(res.data.message)
+            navigate('/login')
+          }else{
+            toast.error(res.data.message)
+          }
+
+          
+        }
+      ).catch(
+        (error)=>{
+          toast.error(error.response.data.message)
+        }
+      )
+      
+      
+  
+  }
 
   const formik = useFormik({
     initialValues: {
@@ -44,7 +79,15 @@ const dispatch = useDispatch();
     validationSchema: schema,
     onSubmit: (values) => {
       console.log(values);
-      dispatch(registerUser(values))
+      // dispatch(registerUser(values))
+      // .then(
+      //   (res)=>{
+      //     toast.success(res.payload.message)
+      //   },
+      //   navigate('/login')
+      // )
+      registerUser(values)
+
     },
   });
   return (

@@ -224,7 +224,7 @@ const Header = () => {
                         <span className="badge bg-white text-dark">
                           {cartLength}
                         </span>
-                        <p className="mb-0">Rs {totalCart}</p>
+                        <p className="mb-0">Rs {Number(isNaN(totalCart) ? 0 : totalCart)}</p>
                       </div>
                     </Link>
                   )}
