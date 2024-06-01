@@ -582,7 +582,7 @@ const Checkout = () => {
                     type="radio"
                     name="paymentMethod"
                     id="flexRadioDefault1"
-                    value="Cash on Delivery"
+                    value="COD"
                     onChange={formik.handleChange("paymentMethod")}
                     onBlur={formik.handleBlur("paymentMethod")}
                   />
