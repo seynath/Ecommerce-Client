@@ -4,6 +4,7 @@ import axios from "axios";
 import { Link } from "react-router-dom";
 import { base_url } from "../utils/axiosConfig";
 import { config } from "../utils/axiosConfig";
+import Title from "antd/es/skeleton/Title";
 
 const Orders = () => {
   const [orders, setOrders] = useState([]);
@@ -25,7 +26,7 @@ const Orders = () => {
       });
 
       if (response) {
-        setIsModalVisible(false);
+        // setIsModalVisible(false);
         fetchEnquiryHistory(order_ID);
       } else {
         console.log("Error submitting enquiry");
@@ -119,6 +120,7 @@ const Orders = () => {
     );
 
     console.log(response.data[0]);
+
     const productsInOrder = response.data[0];
     setOrderProducts(productsInOrder);
   };
@@ -253,30 +255,86 @@ const Orders = () => {
         open={isModalOpen2}
         onOk={() => setIsModalOpen2(false)}
         onCancel={() => setIsModalOpen2(false)}
+        className="w-75"
       >
         {orderProducts && orderProducts.length > 0 && (
           <Table
+            // columns={[
+            //   {
+            //     title: "Product Name",
+            //     dataIndex: "p_title",
+            //     key: "p_title",
+            //   },
+            //   {
+            //     title: "Price",
+            //     dataIndex: "unit_price",
+            //     key: "unit_price",
+            //   },
+            //   {
+            //     title: "Quantity",
+            //     dataIndex: "quantity",
+            //     key: "quantity",
+            //   },
+            //   {
+            //     title: "Total",
+            //     dataIndex: "total",
+            //     key: "total",
+            //   },
+            // ]}
             columns={[
-              {
-                title: "Product Name",
-                dataIndex: "p_title",
-                key: "p_title",
-              },
-              {
-                title: "Price",
-                dataIndex: "unit_price",
-                key: "unit_price",
-              },
-              {
-                title: "Quantity",
-                dataIndex: "quantity",
-                key: "quantity",
-              },
-              {
-                title: "Total",
-                dataIndex: "total",
-                key: "total",
-              },
+            {
+              title: 'Product Id',
+              dataIndex: 'product_id',
+              key: 'product_id',
+            },
+            {
+              title: 'Product Name',
+              dataIndex: 'p_title',
+              key: 'p_title',
+            },
+            {
+              title: 'Price',
+              dataIndex: 'unit_price',
+              key: 'unit_price',
+            },
+            {
+              title:"Size",
+              dataIndex:'size_name',
+              key:"size_name"
+            },
+            {
+              title:"Color",
+              dataIndex:'col_name',
+              key:"col_name"
+            },
+            {
+              title: 'Quantity',
+              dataIndex: 'ordered_quantity',
+              key: 'ordered_quantity',
+            },
+            {
+              title:"Unit Price",
+              dataIndex:'unit_price',
+              key:"unit_price"
+            },
+            {
+              title: 'Total',
+              dataIndex: 'total_price',
+              key: 'total_price',
+            },
+            // button
+            {
+              title: 'Action',
+              key: 'action',
+              render: (text, record) => (
+                <button className="button border-0">
+                  <Link to={`/product/${record.product_id}`} className="text-white">
+                    View Product
+                  </Link>
+                </button>
+              ),
+            }
+
             ]}
             dataSource={orderProducts}
             pagination={false}
@@ -299,7 +357,8 @@ const Orders = () => {
           onChange={(e) => setEnquiry(e.target.value)}
           placeholder="Write your enquiry here"
         />
-        <ul className="">
+      <h6 className="mb-4 mt-3 title">Enquiry History</h6>
+        <ul className="table">
           {/* Display customer's history about this order here */}
 
           {enquiryHistory &&

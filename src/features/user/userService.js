@@ -26,9 +26,8 @@ const login = async (values) => {
 
 const createOrder = async (orderData)=>{
   try{
-    console.log(orderData);
-    console.log(config);
-    return await axios.post(`${base_url}user/cart/create`, orderData, config);
+   
+    return await axios.post(`${base_url}order/create`, orderData, config);
   }catch(error){
     return error.response.data.message;
   }

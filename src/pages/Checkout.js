@@ -9,13 +9,17 @@ import Meta from "../components/Meta";
 import { useSelector, useDispatch } from "react-redux";
 import { getCart } from "../features/products/productSlice";
 import { createOrder } from "../features/user/userSlice";
+import axios from "axios";
+import { base_url, config } from "../utils/axiosConfig";
 
 const Checkout = () => {
   const [cartItems, setCartItems] = useState([]);
   const [subTotalPrice, setSubTotalPrice] = useState(0);
   const [totalPrice, setTotalPrice] = useState(subTotalPrice);
+  const [orderDetails, setOrderDetails] = useState('')
 
   const cart = useSelector((state) => state?.product?.cart || []);
+  console.log(cart);
   useEffect(() => {
     setCartItems(cart);
     let price = 0;
@@ -104,6 +108,80 @@ const Checkout = () => {
     totalPrice: yup.number().required("Add Product to Cart"),
   });
 
+
+
+  const handleSubmit = async (values) => {
+    console.log(values);
+    // .preventDefault();
+    try {
+        const response = await axios.post(`${base_url}order/createbycard`, {values,cart},
+        config);
+
+        const { id: sessionId, url: checkoutUrl } = response.data;
+        window.open(checkoutUrl, '_blank');
+
+        const checkPaymentStatus = setInterval(async () => {
+            try {
+                const updatedSession = await axios.get(`${base_url}order/paymentStatus/${sessionId}`);
+                if (updatedSession.data.payment_status === 'paid') {
+                  console.log();
+                  dispatch(createOrder(values))
+                    clearInterval(checkPaymentStatus);
+                    window.location.href = "/success";
+                } else if (updatedSession.data.payment_status === 'canceled') {
+                  alert("wada na")
+                    clearInterval(checkPaymentStatus);
+                }
+            } catch (error) {
+                console.error('Error checking payment status:', error);
+            }
+        }, 3000);
+    } catch (error) {
+        console.error('Error processing payment:', error);
+    }
+};
+const createOrderByCard = async (values) =>{
+
+  console.log(values);
+  await axios.post(
+    `${base_url}order/createbycard`,
+    {values,cart},
+    config
+  ).then(
+    (res)=>{
+      console.log(res);
+      if(res.data.url){
+        window.location.href = res.data.url;
+      }
+    }
+  ).catch(
+    (err)=>{
+      console.log(err);
+    }
+  )
+}
+
+  // const createOrderByCard = async (values) =>{
+
+  //   console.log(values);
+  //   await axios.post(
+  //     `${base_url}order/createbycard`,
+  //     {values,cart},
+  //     config
+  //   ).then(
+  //     (res)=>{
+  //       console.log(res);
+  //       if(res.data.url){
+  //         window.location.href = res.data.url;
+  //       }
+  //     }
+  //   ).catch(
+  //     (err)=>{
+  //       console.log(err);
+  //     }
+  //   )
+  // }
+
   const formik = useFormik({
     initialValues: {
       firstName: "",
@@ -129,8 +207,31 @@ const Checkout = () => {
     validationSchema: schema,
     onSubmit: (values) => {
       console.log({ values });
-      dispatch(createOrder(values));
+      if (cart.length === 0) {
+        // Display an error message or a notification to the user
+        console.log("Cart is empty, cannot place order");
+        alert("Cart is empty, cannot place order");
+        return;
+      }
+    
+      setOrderDetails(values)
+      if (values.paymentMethod === "Card") {
+        // createOrderByCard(values);
+        handleSubmit(values)
+      } else {
+        dispatch(createOrder(values))
+          .then((response) => {
+            console.log(response);
+            if (response.payload.status === 201) {
+              window.location.href = "/order";
+            }
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      }
     },
+    
   });
   useEffect(() => {
     formik.setFieldValue('totalPrice', totalPrice);
@@ -354,7 +455,7 @@ const Checkout = () => {
                     >
                       <option value="">Select Country</option>
 
-                      <option value="xxx">Sri Lanka</option>
+                      <option value="sri lanka">Sri Lanka</option>
                     </select>
                     <div className="error">
                       {formik.touched.shippingCountry &&
@@ -474,7 +575,7 @@ const Checkout = () => {
                       >
                         <option value="">Select Country</option>
 
-                        <option value="xxx">Sri Lanka</option>
+                        <option value="sri lanka">Sri Lanka</option>
                       </select>
                       <div className="error">
                         {formik.touched.billingCountry &&
@@ -592,14 +693,15 @@ const Checkout = () => {
                   >
                     Cash on Delivery
                   </label>
+
                 </div>
-                {/* <div className="form-check">
+                <div className="form-check">
                   <input
                     className="form-check-input"
                     type="radio"
                     name="paymentMethod"
                     id="flexRadioDefault2"
-                    value="Card Payment"
+                    value="Card"
                     onChange={formik.handleChange("paymentMethod")}
                     onBlur={formik.handleBlur("paymentMethod")}
                   />
@@ -609,7 +711,7 @@ const Checkout = () => {
                   >
                     Card Payment
                   </label>
-                </div> */}
+                </div>
 
                 <div className="error">
                   {formik.touched.paymentMethod && formik.errors.paymentMethod}

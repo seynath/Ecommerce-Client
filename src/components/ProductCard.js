@@ -79,7 +79,7 @@ const ProductCard = (props) => {
                   </button>
                   }
                 </div>
-                <div className="action-bar position-absolute">
+                {/* <div className="action-bar position-absolute">
                   <div className="d-flex flex-column gap-15">
                     <button className="border-0 bg-transparent">
                       <img src={prodcompare} alt="compare" />
@@ -91,13 +91,14 @@ const ProductCard = (props) => {
                       <img src={addcart} alt="addcart" />
                     </button>
                   </div>
-                </div>
+                </div> */}
 
                 <Link to={`/product/${product?.p_id}`}>
-                  <div className="product-image">
+                  <div className="product-image" >
                     <img
                       src={product?.image_link}
                       className="img-fluid img-thumbnail"
+                      
                       alt="product_image"
                     />
                     <img

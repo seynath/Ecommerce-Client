@@ -107,6 +107,7 @@ const SingleProduct = () => {
     }
     return 0;
   };
+  
 
   useEffect(() => {
     if (color && size && quantity) {
@@ -194,8 +195,11 @@ const SingleProduct = () => {
           review: submitValue,
         })
       );
+    } else {
+navigate("/login")
     }
   };
+
 
   return (
     <>
@@ -236,15 +240,17 @@ const SingleProduct = () => {
                   <p className="price">Rs {price.toFixed(2)}</p>
                 )}
                 <div className="d-flex align-items-center gap-10">
-                  <ReactStars
+                  {/* <ReactStars
+                  
                     count={5}
                     size={24}
-                    // value={Number(reviewStars)}
-                    value={Number(singleProduct?.total_rating)}
+                    // value={Number(rating)}
+                    // value={Number(singleProduct?.total_rating).toFixed(0)}
+                    value={Math.floor(Number(singleProduct?.total_rating))}                    
                     edit={false}
                     activeColor="#ffd700"
-                  />
-                  <p className="mb-0 t-review">{singleProduct?.total_rating}</p>
+                  /> */}
+                  <p className="mb-0 t-review"><span className="text-dark " style={{fontWeight:"bold"}}>Rating</span>    {singleProduct?.total_rating}</p>
                 </div>
                 <a className="review-btn" href="#review">
                   Write a Review
