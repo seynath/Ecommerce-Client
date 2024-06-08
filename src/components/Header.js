@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { NavLink, Link } from "react-router-dom";
+import { NavLink, Link, useNavigate } from "react-router-dom";
 import { BsSearch } from "react-icons/bs";
 import compare from "../images/compare.svg";
 import wishlistIcon from "../images/wishlist.svg";
@@ -7,12 +7,31 @@ import userIcon from "../images/user.svg";
 import cartIcon from "../images/cart.svg";
 import menu from "../images/menu.svg";
 import { useSelector, useDispatch } from "react-redux";
-import { getCart, getWishlist } from "../features/products/productSlice";
+import { getAllProducts, getCart, getWishlist } from "../features/products/productSlice";
 import axios from "axios";
 import { base_url } from "../utils/axiosConfig";
 const Header = () => {
-  const [categories,setCategories] = useState([])
+  const [categories, setCategories] = useState([]);
   const dispatch = useDispatch();
+  const navigate = useNavigate()
+  const products = useSelector((state) => state.product.product);
+  console.log(products);
+
+  const [search, setSearch] = useState("");
+  const [filteredProducts, setFilteredProducts] = useState([]);
+
+  const handleSearchChange = (e) => {
+    setSearch(e.target.value);
+    if (e.target.value) {
+      const filtered = products?.filter((product) =>
+        product.p_title.toLowerCase().includes(e.target.value.toLowerCase())
+      );
+      setFilteredProducts(filtered);
+    } else {
+      setFilteredProducts([]);
+    }
+  };
+
   const user = useSelector((state) => state.auth.user);
 
   const cartState = useSelector((state) => state?.product?.cart) || [];
@@ -24,15 +43,14 @@ const Header = () => {
   useEffect(() => {
     const fetchData = async () => {
       if (user) {
+        dispatch(getAllProducts())
         await dispatch(getCart());
         await dispatch(getWishlist());
-
       }
     };
 
     fetchData();
   }, []);
-
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -41,12 +59,11 @@ const Header = () => {
         // Do something with response
         console.log(response.data);
         setCategories(response.data);
-
       } catch (error) {
         console.error(error);
       }
     };
-  
+
     fetchCategories();
   }, []);
 
@@ -63,6 +80,16 @@ const Header = () => {
   let cartLength = 0;
   if (cartState && Array.isArray(cartState)) {
     cartLength = cartState.length;
+  }
+
+  const navigateToProduct = (id) => {
+    console.log(id);
+
+    navigate(`/product/${id}`);
+
+    setFilteredProducts([])
+    setSearch('')
+    // window.location.href = `/product/${id}`;
   }
 
   return (
@@ -104,15 +131,30 @@ const Header = () => {
                   placeholder="Search Product Here..."
                   aria-label="Search Product Here..."
                   aria-describedby="basic-addon2"
+                  value={search}
+                  onChange={handleSearchChange}
                 />
+                
+
                 <span className="input-group-text p-3" id="basic-addon2">
                   <BsSearch className="fs-7" />
                 </span>
               </div>
+              <div>
+              {filteredProducts.length > 0 && (
+                  <div className="dropdown-menu show">
+                    {filteredProducts.map((product, index) => (
+                      <div key={index} className="dropdown-item" onClick={()=>{navigateToProduct(product.p_id)}}>
+                        <img alt="prd" src={product.image_link} width={50} height={50}/>
+                        {product.p_title}
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
             </div>
             <div className="col-5">
               <div className="header-upper-links d-flex align-items-center gap-3 justify-content-end">
-        
                 <div>
                   {!user ? (
                     <Link
@@ -136,7 +178,6 @@ const Header = () => {
                   {/* Login */}
                 </div>
                 <div>
-
                   <div className="dropdown">
                     <button
                       className="btn btn-secondary dropdown-toggle bg-transparent border-0 gap-15 d-flex align-items-center"
@@ -151,38 +192,40 @@ const Header = () => {
                       className="dropdown-menu"
                       aria-labelledby="dropdownMenuButton1"
                     >
-                    {user !== null ? (<>
-                      <li>
-                        <Link className="dropdown-item  text-dark" to="/profile">
-                          My Account
-                        </Link>
-                      </li>
-                        <li>
-                          <Link
-                            to="/order"
-                            className=" dropdown-item  align-items-center text-dark"
-                          >
-                        
-                            My Orders
-                          </Link>
-                        </li>
-                        <li>
-                          <button
-                            to="/logout"
-                            className=" dropdown-item  align-items-center text-dark "
-                            onClick={() => {
-                              // Remove the user and tokens from local storage
-                              localStorage.removeItem('user');
-                              localStorage.removeItem('token');
-                          
-                              // Refresh the page
-                              window.location.reload();
-                            }}
-                          >
-                        
-                            Log Out
-                          </button>
-                        </li>
+                      {user !== null ? (
+                        <>
+                          <li>
+                            <Link
+                              className="dropdown-item  text-dark"
+                              to="/profile"
+                            >
+                              My Account
+                            </Link>
+                          </li>
+                          <li>
+                            <Link
+                              to="/order"
+                              className=" dropdown-item  align-items-center text-dark"
+                            >
+                              My Orders
+                            </Link>
+                          </li>
+                          <li>
+                            <button
+                              to="/logout"
+                              className=" dropdown-item  align-items-center text-dark "
+                              onClick={() => {
+                                // Remove the user and tokens from local storage
+                                localStorage.removeItem("user");
+                                localStorage.removeItem("token");
+
+                                // Refresh the page
+                                window.location.reload();
+                              }}
+                            >
+                              Log Out
+                            </button>
+                          </li>
                         </>
                       ) : (
                         <li>
@@ -224,7 +267,9 @@ const Header = () => {
                         <span className="badge bg-white text-dark">
                           {cartLength}
                         </span>
-                        <p className="mb-0">Rs {Number(isNaN(totalCart) ? 0 : totalCart)}</p>
+                        <p className="mb-0">
+                          Rs {Number(isNaN(totalCart) ? 0 : totalCart)}
+                        </p>
                       </div>
                     </Link>
                   )}
@@ -257,18 +302,19 @@ const Header = () => {
                       className="dropdown-menu"
                       aria-labelledby="dropdownMenuButton1"
                     >
-                      {(categories.length !== 0) && categories.map((category, index) => (
-                        <li key={index}>
-                          <Link
-                            className="dropdown-item text-white"
-                            to={`/category/${category.cat_id}`}
-                          >
-                            {category.cat_name}
-                          </Link>
-                        </li>
-                      ))}
+                      {categories.length !== 0 &&
+                        categories.map((category, index) => (
+                          <li key={index}>
+                            <Link
+                              className="dropdown-item text-white"
+                              to={`/category/${category.cat_id}`}
+                            >
+                              {category.cat_name}
+                            </Link>
+                          </li>
+                        ))}
                     </ul>
-                      {/* <li>
+                    {/* <li>
                         <Link className="dropdown-item text-white" to="">
                           Action
                         </Link>

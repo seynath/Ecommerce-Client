@@ -20,6 +20,7 @@ import axios from "axios";
 import { base_url } from "../utils/axiosConfig";
 import { config } from "../utils/axiosConfig";
 import { addReview } from "../features/products/productSlice";
+import { toast } from "react-toastify";
 
 const SingleProduct = () => {
   const user = useSelector((state) => state.auth.user);
@@ -38,6 +39,15 @@ const SingleProduct = () => {
     fetchData();
   }, []);
 
+  const getReviews = async () => {
+    await axios
+      .get(`${base_url}product/rating/${getProductId}`, config)
+      .then((response) => {
+        console.log(response.data);
+        setReviews(response.data);
+      });
+  };
+
   useEffect(() => {
     const fetchProductAndCart = async () => {
       await dispatch(getSingleProduct(getProductId));
@@ -46,15 +56,6 @@ const SingleProduct = () => {
         await dispatch(getCart());
         // const response = await axios.get(`${base_url}user/cart`, config)
       }
-    };
-
-    const getReviews = async () => {
-      await axios
-        .get(`${base_url}product/rating/${getProductId}`, config)
-        .then((response) => {
-          console.log(response.data);
-          setReviews(response.data);
-        });
     };
 
     fetchProductAndCart();
@@ -107,7 +108,6 @@ const SingleProduct = () => {
     }
     return 0;
   };
-  
 
   useEffect(() => {
     if (color && size && quantity) {
@@ -194,12 +194,16 @@ const SingleProduct = () => {
           stars: submitStars,
           review: submitValue,
         })
-      );
+      ).then((response) => {
+        if (response.payload.status == 200) {
+          toast.success("Successfully Added Review");
+          getReviews();
+        }
+      });
     } else {
-navigate("/login")
+      navigate("/login");
     }
   };
-
 
   return (
     <>
@@ -250,11 +254,24 @@ navigate("/login")
                     edit={false}
                     activeColor="#ffd700"
                   /> */}
-                  <p className="mb-0 t-review"><span className="text-dark " style={{fontWeight:"bold"}}>Rating</span>    {singleProduct?.total_rating}</p>
+                  <p className="mb-0 t-review">
+                    <span className="text-dark " style={{ fontWeight: "bold" }}>
+                      Rating
+                    </span>{" "}
+                    {singleProduct?.total_rating}
+                  </p>
                 </div>
-                <a className="review-btn" href="#review">
-                  Write a Review
-                </a>
+
+
+                <div className="d-flex flex-column">
+                  <a className="review-btn" href="#review">
+                    Write a Review
+                  </a>
+                  <a className="review-btn" href="#bulk">
+                    Bulk Orders
+                  </a>
+                </div>
+
               </div>
               <div className=" py-3">
                 {/* <div className="d-flex gap-10 align-items-center my-2">
@@ -505,14 +522,6 @@ navigate("/login")
           </div>
         </div>
       </Container>
-      <Container class1="popular-wrapper py-5 home-wrapper-2">
-        <div className="row">
-          <div className="col-12">
-            <h3 className="section-heading">Our Popular Products</h3>
-          </div>
-        </div>
-        <div className="row">{/* <ProductCard /> */}</div>
-      </Container>
 
       <div
         className="modal fade"
@@ -553,16 +562,19 @@ navigate("/login")
             <div className="modal-footer border-0 py-0 justify-content-center gap-30">
               <div
                 className="w-100"
-                to={"/product"}
-                onClick={() => {
-                  closeModal()
-                  window.location.replace("/")
-                }}
+                // to={"/product"}
+                // onClick={() => {
+                //   closeModal()
+                //   window.location.replace("/")
+                // }}
               >
                 <button
                   type="button"
                   className="button w-100"
                   data-bs-dismiss="modal"
+                  onClick={() => {
+                    navigate("/product");
+                  }}
                 >
                   Continue Shopping
                 </button>
@@ -572,8 +584,8 @@ navigate("/login")
                 // to="/cart"
 
                 onClick={() => {
-                  closeModal()
-                  window.location.replace("/cart")
+                  closeModal();
+                  window.location.replace("/cart");
                 }}
               >
                 <button type="button" className="button signup w-100">

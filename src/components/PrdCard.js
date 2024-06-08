@@ -52,40 +52,28 @@ const PrdCard = (props) => {
         location.pathname === "/product" ? "gr-3" : "col-3"
       } `}
     >
-      <Link
-        // to={`${ 
-        //   location.pathname === "/"
-        //     ? "/product/:id"
-        //     : location.pathname === "/product/:id"
-        //     ? "/product/:id"
-        //     : ":id"
-        // }`}
-        to={`/product/${data?.p_id}`}
+      
+      <div
         className="product-card position-relative "
         style={{minWidth: "200px"}}
       >
         <div className="wishlist-icon position-absolute">
           <button
             className="border-0 bg-transparent"
-            // onClick={(e) => {
-            //   // addWishlist(data?.p_id);
-            //   addWishlist(data?.p_id);
-
-            //   // alert ("Product added to wishlist");
-            // }}
+        
             onClick={() => addToWishlist(data?.p_id)}
           >
-            {/* <img src={wish} alt="wishlist" /> */}
             <FaHeart
             className="z-3"
-              // color={wishlistState?.includes(product?.p_id) ? "blue" : "red"}
               color={
                 wishlistProductIds.includes(data?.p_id) ? "red" : "gray"
               }
-              // color={wishlistState.product_id.includes(product?.p_id) ? "red" : "blue"}
             />
           </button>
-        </div>
+          </div>
+          <Link 
+                  to={`/product/${data?.p_id}`}>
+                    
         <div className="product-image">
           <img
             src={data?.image_link}
@@ -115,20 +103,8 @@ const PrdCard = (props) => {
           ></p>
           <p className="price">Rs {data?.price}</p>
         </div>
-        <div className="action-bar position-absolute">
-          <div className="d-flex flex-column gap-15">
-            <button className="border-0 bg-transparent">
-              <img src={prodcompare} alt="compare" />
-            </button>
-            <button className="border-0 bg-transparent">
-              <img src={view} alt="view" />
-            </button>
-            <button className="border-0 bg-transparent">
-              <img src={addcart} alt="addcart" />
-            </button>
-          </div>
-        </div>
-      </Link>
+        </Link>
+      </div>
     </div>
   );
 };

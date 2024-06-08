@@ -60,6 +60,9 @@ const Orders = () => {
       title: "Order ID",
       dataIndex: "order_id",
       key: "order_id",
+      sorter:(a, b) => a.order_id - b.order_id,
+      defaultSortOrder: 'descend',
+
     },
     {
       title: "Payment Method",
@@ -193,7 +196,7 @@ const Orders = () => {
               })
             }
           >
-            View Details
+            Order Details
           </button>
 
           <button
@@ -217,7 +220,7 @@ const Orders = () => {
           className="button border-0"
           onClick={() => showOrderedProducts(order)}
         >
-          View Ordered Products
+           Ordered Products
         </button>
       ),
     }));

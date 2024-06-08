@@ -15,25 +15,23 @@ const OurStore = () => {
   // const [productState,setProducts] = useState([]);
   const dispatch = useDispatch();
 
-  const productState = useSelector((state) => state.product.product)
+  const productState = useSelector((state) => state.product.product);
   const user = useSelector((state) => state?.auth?.user);
   console.log(productState);
 
+  // const fetchProducts = async () => {
 
-
-    // const fetchProducts = async () => {
-  
-    //     await axios.get(`${base_url}product/`)
-    //     .then((res)=>{
-    //       console.log(res.data);
-    //       setProducts(res.data);
-    //     }
-    //     ).catch(
-    //       (error)=>{
-    //         console.log(error);
-    //       }
-    //     )
-    // }
+  //     await axios.get(`${base_url}product/`)
+  //     .then((res)=>{
+  //       console.log(res.data);
+  //       setProducts(res.data);
+  //     }
+  //     ).catch(
+  //       (error)=>{
+  //         console.log(error);
+  //       }
+  //     )
+  // }
 
   useEffect(() => {
     getproducts();
@@ -43,16 +41,13 @@ const OurStore = () => {
   // const getproducts = () => {
   //   dispatch(getAllProducts())
   // }
-  
 
   console.log({ productState });
-
-
 
   const [filteredProducts, setFilteredProducts] = useState([]);
 
   // Define a state to hold the selected filter value
-  const [filter, setFilter] = useState('manual');
+  const [filter, setFilter] = useState("manual");
 
   useEffect(() => {
     getproducts();
@@ -60,8 +55,8 @@ const OurStore = () => {
   }, []);
 
   const getproducts = () => {
-    dispatch(getAllProducts())
-  }
+    dispatch(getAllProducts());
+  };
 
   // Use the filter method to filter the products
   useEffect(() => {
@@ -72,48 +67,59 @@ const OurStore = () => {
       //   const bestSelling = productState.filter(product => product.sold >= 1);
       //   setFilteredProducts(bestSelling);
       //   break;
-      case 'best-selling':
-  // Sort the products based on their sales, from high to low
-  const bestSelling = [...productState].sort((a, b) => b.sold - a.sold);
-  setFilteredProducts(bestSelling);
-  break;
+      case "best-selling":
+        // Sort the products based on their sales, from high to low
+        const bestSelling = [...productState].sort((a, b) => b.sold - a.sold);
+        setFilteredProducts(bestSelling);
+        break;
 
-      case 'title-ascending':
-        const titleAscending = [...productState].sort((a, b) => a.p_title.localeCompare(b.p_title));
+      case "title-ascending":
+        const titleAscending = [...productState].sort((a, b) =>
+          a.p_title.localeCompare(b.p_title)
+        );
         setFilteredProducts(titleAscending);
         break;
-      case 'title-descending':
-        const titleDescending = [...productState].sort((a, b) => b.p_title.localeCompare(a.p_title));
+      case "title-descending":
+        const titleDescending = [...productState].sort((a, b) =>
+          b.p_title.localeCompare(a.p_title)
+        );
         setFilteredProducts(titleDescending);
         break;
-      case 'price-ascending':
-        const priceAscending = [...productState].sort((a, b) => parseFloat(a.price) - parseFloat(b.price));
+      case "price-ascending":
+        const priceAscending = [...productState].sort(
+          (a, b) => parseFloat(a.price) - parseFloat(b.price)
+        );
         setFilteredProducts(priceAscending);
         break;
-      case 'price-descending':
-        const priceDescending = [...productState].sort((a, b) => parseFloat(b.price) - parseFloat(a.price));
+      case "price-descending":
+        const priceDescending = [...productState].sort(
+          (a, b) => parseFloat(b.price) - parseFloat(a.price)
+        );
         setFilteredProducts(priceDescending);
         break;
-      case 'created-ascending':
-        const createdAscending = [...productState].sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
+      case "created-ascending":
+        const createdAscending = [...productState].sort(
+          (a, b) => new Date(a.created_at) - new Date(b.created_at)
+        );
         setFilteredProducts(createdAscending);
         break;
-      case 'created-descending':
-        const createdDescending = [...productState].sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+      case "created-descending":
+        const createdDescending = [...productState].sort(
+          (a, b) => new Date(b.created_at) - new Date(a.created_at)
+        );
         setFilteredProducts(createdDescending);
         break;
       default:
         setFilteredProducts(productState);
     }
   }, [productState, filter]);
+
   return (
     <>
       <Meta title={"Our Store"} />
       <BreadCrumb title="Our Store" />
       <Container class1="store-wrapper home-wrapper-2 py-5">
         <div className="row">
-
-
           <div className="col-12">
             <div className="filter-sort-grid mb-4">
               <div className="d-flex justify-content-between align-items-center">
@@ -122,26 +128,26 @@ const OurStore = () => {
                     Sort By:
                   </p>
                   <select
-        name=""
-        value={filter}
-        onChange={e => setFilter(e.target.value)}
-        className="form-control form-select"
-        id=""
-      >
-        <option value="manula">Featured</option>
-        <option value="best-selling">Best selling</option>
-        <option value="title-ascending">Alphabetically, A-Z</option>
-        <option value="title-descending">
-          Alphabetically, Z-A
-        </option>
-        <option value="price-ascending">Price, low to high</option>
-        <option value="price-descending">Price, high to low</option>
-        <option value="created-ascending">Date, old to new</option>
-        <option value="created-descending">Date, new to old</option>
-      </select>
+                    name=""
+                    value={filter}
+                    onChange={(e) => setFilter(e.target.value)}
+                    className="form-control form-select"
+                    id=""
+                  >
+                    <option value="manula">Featured</option>
+                    <option value="best-selling">Best selling</option>
+                    <option value="title-ascending">Alphabetically, A-Z</option>
+                    <option value="title-descending">
+                      Alphabetically, Z-A
+                    </option>
+                    <option value="price-ascending">Price, low to high</option>
+                    <option value="price-descending">Price, high to low</option>
+                    <option value="created-ascending">Date, old to new</option>
+                    <option value="created-descending">Date, new to old</option>
+                  </select>
                 </div>
                 <div className="d-flex align-items-center gap-10">
-                  <p className="totalproducts mb-0">21 Products</p>
+                  {/* <p className="totalproducts mb-0">21 Products</p> */}
                   <div className="d-flex gap-10 align-items-center grid">
                     <img
                       onClick={() => {
@@ -182,7 +188,7 @@ const OurStore = () => {
             </div>
             <div className="products-list pb-5">
               <div className="d-flex gap-10 flex-wrap">
-                <ProductCard data={filteredProducts}  grid={grid} />
+                <ProductCard data={filteredProducts} grid={grid} />
               </div>
             </div>
           </div>
