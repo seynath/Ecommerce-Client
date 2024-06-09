@@ -11,11 +11,15 @@ const Orders = () => {
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isModalOpen2, setIsModalOpen2] = useState(false);
+  const [isModalVisible3, setIsModalVisible3] = useState(false);
   const [orderProducts, setOrderProducts] = useState([]);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [enquiry, setEnquiry] = useState("");
   const [enquiryHistory, setEnquiryHistory] = useState([]);
   const [order_ID, setOrder_ID] = useState("");
+
+  const [bulkOrders, setBulkOrders] = useState([]);
+  const [bulkOrderProducts, setBulkOrderProducts] = useState([]);
 
   const handleEnquirySubmit = async (enquiry, order_ID) => {
     try {
@@ -105,9 +109,45 @@ const Orders = () => {
       // ),
     },
   ];
+
+
+
+
+  const bulkColumn = [
+    {
+      title: "Bulk Order ID",
+      dataIndex: "bulk_id",
+      key: "order_id",
+      sorter:(a, b) => a.order_id - b.order_id,
+      defaultSortOrder: 'descend',
+
+    },
+
+    {
+      title: "Order Status",
+      dataIndex: "order_status",
+      key: "order_status",
+    },
+    {
+      title: "View Ordered Products",
+      dataIndex: "view_ordered_products",
+      key: "view_ordered_products",
+      // render: (text, record) => (
+      //   <Button type="primary" onClick={() => showOrderedProducts(record)}>
+      //     View Ordered Products
+      //   </Button>
+      // ),
+    },
+  ];
+  
+
+
+
+
   useEffect(() => {
     getOrders();
-  }, []);
+    getBulkOrders() 
+   }, []);
 
   const getOrders = async () => {
     const response = await axios.get(`${base_url}user/get-ordersbyid`, config);
@@ -128,14 +168,6 @@ const Orders = () => {
     setOrderProducts(productsInOrder);
   };
 
-  // const updateOrderStatus = async (orderId, newStatus) => {
-  //   await axios.put(
-  //     `${base_url}user/order/update-order/${orderId}`,
-  //     { status: newStatus },
-  //     config
-  //   );
-  //   getOrders();
-  // };
 
   const showModal = (order) => {
     setSelectedOrder(order);
@@ -150,12 +182,36 @@ const Orders = () => {
 
   const handleOk = () => {
     setIsModalOpen(false);
+    setIsModalVisible3(false)
 
   };
 
   const handleCancel = () => {
     setIsModalOpen(false);
+    setIsModalVisible3(false);
   };
+
+  const getBulkOrderProducts = async (bulk_id) => {
+    console.log(bulk_id);
+    await axios.get(`${base_url}order/get-bulkorder-products/${bulk_id}`, config)
+    .then(response => {
+      console.log(response.data);
+      setBulkOrderProducts(response.data);
+    }).catch(
+      error => console.log(error)
+    )
+  }
+
+  const getBulkOrders = async () =>{
+    const response = await axios.get(`${base_url}order/bulk/ordersByID`, config);
+    console.log(response.data);
+    setBulkOrders(response.data);
+  }
+
+  const showBulkOrderedProducts = (bulk_id) => {
+    setIsModalVisible3(true);
+    getBulkOrderProducts(bulk_id);
+  }
 
   const data1 =
     orders &&
@@ -225,10 +281,42 @@ const Orders = () => {
       ),
     }));
 
+    const data2 = 
+    bulkOrders && bulkOrders.map((bulkorder)=>(
+      {
+        key: bulkorder.bulk_id,
+        bulk_id: bulkorder.bulk_id,
+        order_status: bulkorder.order_status,
+      
+        view_ordered_products: (
+          <button
+            type=""
+            className="button border-0"
+            onClick={() => showBulkOrderedProducts(bulkorder.bulk_id)}
+          >
+             Ordered Products
+          </button>
+        ),
+      }
+    ))
+
+    const data3 =
+    bulkOrderProducts &&
+    bulkOrderProducts.map((product) => ({
+      key: product.p_id,
+      product_id: product.p_id,
+      p_title: product.p_title,
+      bulk_quantity: product.bulk_quantity,
+      size_name: product.size_name,
+      col_name: product.col_name,
+    }));
+
   return (
     <div className="px-5 py-2">
       <h3 className="mb-4 title">My Orders</h3>
       <div>{<Table columns={columns} dataSource={data1} />}</div>
+      <h3 className="mb-4 title">Bulk Orders</h3>
+      <div>{<Table columns={bulkColumn} dataSource={data2} />}</div>
 
       <Modal
         title="Order Details"
@@ -262,28 +350,7 @@ const Orders = () => {
       >
         {orderProducts && orderProducts.length > 0 && (
           <Table
-            // columns={[
-            //   {
-            //     title: "Product Name",
-            //     dataIndex: "p_title",
-            //     key: "p_title",
-            //   },
-            //   {
-            //     title: "Price",
-            //     dataIndex: "unit_price",
-            //     key: "unit_price",
-            //   },
-            //   {
-            //     title: "Quantity",
-            //     dataIndex: "quantity",
-            //     key: "quantity",
-            //   },
-            //   {
-            //     title: "Total",
-            //     dataIndex: "total",
-            //     key: "total",
-            //   },
-            // ]}
+   
             columns={[
             {
               title: 'Product Id',
@@ -374,6 +441,53 @@ const Orders = () => {
               </li>
             ))}
         </ul>
+      </Modal>
+      <Modal
+        title="Bulk Ordered Products"
+        visible={isModalVisible3}
+        okText="Ok"
+        onOk={handleOk}
+        onCancel={handleCancel}
+      >
+      {bulkOrderProducts && bulkOrderProducts.length > 0 && (
+          <Table
+          
+            columns={[
+
+              {
+                title: 'Product Id',
+                dataIndex: 'product_id',
+                key: 'product_id',
+              },
+              {
+                title: 'Product Name',
+                dataIndex: 'p_title',
+                key: 'p_title',
+              },
+     
+              {
+                title: 'Quantity',
+                dataIndex: 'bulk_quantity',
+                key: 'bulk_quantity',
+              },
+              {
+                title:"Size",
+                dataIndex:'size_name',
+                key:"size_name"
+              },
+              {
+                title:"Color",
+                dataIndex:'col_name',
+                key:"col_name"
+              },
+   
+          
+            ]}
+            dataSource={data3}
+            pagination={false}
+          />
+        )}
+        {bulkOrderProducts && bulkOrderProducts.length === 0 && <p>No products ordered.</p>}
       </Modal>
     </div>
   );

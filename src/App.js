@@ -25,6 +25,7 @@ import CategoryProducts from "./pages/CategoryProducts";
 import Profile from "./pages/Profile";
 import SuccessPayment from "./pages/SuccessPayment";
 import Hero2 from "./components/Hero2";
+import BulkOrders from "./pages/BulkOrders";
 function App() {
   return (
     <>
@@ -37,6 +38,7 @@ function App() {
             <Route path="contact" element={<Contact />} />
             <Route path="product" element={<OurStore />} />
             <Route path="product/:id" element={<SingleProduct />} />
+            <Route path="bulk/:id" element={<BulkOrders/>} />
             <Route path="category/:id" element={<CategoryProducts/>} />
             <Route path="cart" element={<PrivateRoute><Cart /></PrivateRoute>} />
             <Route path="checkout" element={<PrivateRoute><Checkout /></PrivateRoute>} />
@@ -52,6 +54,7 @@ function App() {
             <Route path="term-conditions" element={<TermAndContions />} />
             <Route path="success" element={<SuccessPayment/>} />
             <Route path="cancel" element={<SuccessPayment/>} />
+            
             <Route path="ll" element={<Hero2/> }/>
 
           </Route>

@@ -267,9 +267,9 @@ const SingleProduct = () => {
                   <a className="review-btn" href="#review">
                     Write a Review
                   </a>
-                  <a className="review-btn" href="#bulk">
+                  <Link className="review-btn" to={`/bulk/${getProductId}`}>
                     Bulk Orders
-                  </a>
+                  </Link>
                 </div>
 
               </div>
