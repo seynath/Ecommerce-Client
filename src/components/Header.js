@@ -9,7 +9,14 @@ import menu from "../images/menu.svg";
 import { useSelector, useDispatch } from "react-redux";
 import { getAllProducts, getCart, getWishlist } from "../features/products/productSlice";
 import axios from "axios";
+import { CiShoppingCart } from "react-icons/ci";
 import { base_url } from "../utils/axiosConfig";
+import { FaRegHeart } from "react-icons/fa";
+import NF from '../images/NF.png'
+import { CiSearch } from "react-icons/ci";
+import { FaBars } from "react-icons/fa";
+
+
 const Header = () => {
   const [categories, setCategories] = useState([]);
   const dispatch = useDispatch();
@@ -94,40 +101,44 @@ const Header = () => {
 
   return (
     <>
-      {/* <header className="header-top-strip py-3">
+      <header className="header-top-strip py-3">
         <div className="container-xxl">
           <div className="row">
             <div className="col-6">
               <p className="text-white mb-0">
-                Free Shipping Over Rs 5000 & Free Returns
+                Free Shipping & Free Returns
               </p>
             </div>
             <div className="col-6">
               <p className="text-end text-white mb-0">
                 Hotline:
                 <a className="text-white" href="tel:+91 8264954234">
-                  +78 xxx xxxx
+                  +78 606 8119
                 </a>
               </p>
             </div>
           </div>
         </div>
-      </header> */}
+      </header>
       <header className="header-upper py-3 pt-4">
         <div className="container-xxl">
           <div className="row align-items-center">
             <div className="col-3">
-              <h2>
+              <div>
                 <Link to={"/"} className="text-white">
-                  Nisha Fashion
+                <img src={NF} width={70} height={70} />
                 </Link>
-              </h2>
+              </div>
             </div>
             <div className="col-4">
-              <div className="input-group">
+              <div className="input-group"
+              style={{backgroundColor:"white", borderRadius:"20px"}}
+              
+              >
                 <input
                   type="text"
-                  className="form-control py-2"
+                  className="form-control py-1"
+                  style={{borderRadius:"20px"}}
                   placeholder="Search Product Here..."
                   aria-label="Search Product Here..."
                   aria-describedby="basic-addon2"
@@ -136,8 +147,9 @@ const Header = () => {
                 />
                 
 
-                <span className="input-group-text p-3" id="basic-addon2">
-                  <BsSearch className="fs-7" />
+                <span className=" p-3" id="basic-addon2">
+                <CiSearch size={30} />
+                  {/* <BsSearch className="fs-7" /> */}
                 </span>
               </div>
               <div>
@@ -251,7 +263,8 @@ const Header = () => {
                       to="/login"
                       className="d-flex align-items-center gap-10 text-white"
                     >
-                      <img src={cartIcon} alt="cart" />
+                      {/* <img src={cartIcon} alt="cart" /> */}
+                      <CiShoppingCart  size={35}/>
                       {/* <div className="d-flex flex-column gap-10">
                         <span className="badge bg-white text-dark">0</span>
                         <p className="mb-0">Rs 500</p>
@@ -262,9 +275,10 @@ const Header = () => {
                       to="/cart"
                       className="d-flex align-items-center gap-10 text-white"
                     >
-                      <img src={cartIcon} alt="cart" />
+                      <CiShoppingCart  size={35}/>
+                      {/* <img src={cartIcon} alt="cart" /> */}
                       <div className="d-flex flex-column gap-10">
-                        <span className="badge bg-white text-dark">
+                        <span className="badge bg-white text-dark" >
                           {cartLength}
                         </span>
                         <p className="mb-0">
@@ -279,10 +293,11 @@ const Header = () => {
           </div>
         </div>
       </header>
-      <header className="header-bottom py-3">
-        <div className="container-xxl">
-          <div className="row">
-            <div className="col-12">
+      {/* <header className="header-bottom py-3" style={{borderTopColor:"white", border:"1px solid white"}}> */}
+      <header className="header-bottom py-3" style={{borderTop:"1px solid white", borderBottom:"2px solid white"}}>
+        <div className="container-xxl" >
+          <div className="row" >
+            <div className="col-12" >
               <div className="menu-bottom d-flex align-items-center gap-30">
                 <div>
                   <div className="dropdown">
@@ -293,7 +308,8 @@ const Header = () => {
                       data-bs-toggle="dropdown"
                       aria-expanded="false"
                     >
-                      <img src={menu} alt="" />
+                      {/* <img src={menu} alt="" /> */}
+                      <FaBars  size={15}/>
                       <span className="me-5 d-inline-block">
                         Shop Categories
                       </span>
@@ -314,26 +330,11 @@ const Header = () => {
                           </li>
                         ))}
                     </ul>
-                    {/* <li>
-                        <Link className="dropdown-item text-white" to="">
-                          Action
-                        </Link>
-                      </li>
-                      <li>
-                        <Link className="dropdown-item text-white" to="">
-                          Another action
-                        </Link>
-                      </li>
-                      <li>
-                        <Link className="dropdown-item text-white" to="">
-                          Something else here
-                        </Link>
-                      </li>
-                    </ul> */}
+                
                   </div>
                 </div>
-                <div className="menu-links">
-                  <div className="d-flex align-items-center gap-15 ">
+                <div className="menu-links w-100 ">
+                  <div className="d-flex align-items-center gap-15 " style={{marginInlineStart:"300px"}}>
                     <NavLink to="/">Home</NavLink>
                     <NavLink to="/product">Our Store</NavLink>
                     <NavLink to="/contact">Contact</NavLink>
@@ -349,155 +350,3 @@ const Header = () => {
 };
 
 export default Header;
-
-// import React from "react";
-// import { NavLink, Link } from "react-router-dom";
-// import { BsSearch } from "react-icons/bs";
-
-// function Header() {
-//   return (
-//     <>
-//       <header className="header-top-strip py-3">
-//         <div className="container-xxl">
-//           <div className="row">
-//             <div className="col-6">
-//               <p className="text-white mb-0">
-//                 Free Shipping Over Rs.5000 & Free Returns
-//               </p>
-//             </div>
-//             <div className="col-6">
-//               <p className="text-end text-white mb-0">
-//                 Hotline:
-//                 <a className="text-white" href="tel:+923000000000">
-//                   +92 300 0000000
-//                 </a>
-//               </p>
-//             </div>
-//           </div>
-//         </div>
-//       </header>
-//       <header className="header-upper py-3">
-//         <div className="container-xxl">
-//           <div className="row">
-//             <div className="col-3">
-//               <h2>
-//                 <Link className="text-white">Nisha Fashion</Link>
-//               </h2>
-//             </div>
-//             <div className="col-4">
-//               <div className="input-group ">
-//                 <input
-//                   type="text"
-//                   className="form-control py-2"
-//                   placeholder="Search Product..."
-//                   aria-label="Search Product"
-//                   aria-describedby="basic-addon2"
-//                 />
-//                 <span className="input-group-text p-3" id="basic-addon2">
-//                   <BsSearch className="fs-6 " />
-//                 </span>
-//               </div>
-//             </div>
-//             <div className="col-5">
-//               <div className="header-upper-links d-flex justify-content-between align-items-center">
-//                 <div>
-//                   <Link className="d-flex align-items-center gap-10 text-white">
-//                     <img src="images/compare.svg" alt="compare" />
-//                     <p className="mb-0">
-//                       Compare <br />
-//                       Products
-//                     </p>
-//                   </Link>
-//                 </div>
-//                 <div>
-//                   <Link className="d-flex align-items-center gap-10 text-white">
-//                     <img src="images/wishlist.svg" alt="wishlist" />
-//                     <p className="mb-0">
-//                       Favourite <br />
-//                       Wishlist
-//                     </p>
-//                   </Link>
-//                 </div>
-//                 <div>
-//                   <Link className="d-flex align-items-center gap-10 text-white">
-//                     <img src="images/user.svg" alt="user" />
-//                     <p className="mb-0">
-//                       Login <br />
-//                       My Account
-//                     </p>
-//                   </Link>
-//                 </div>
-//                 <div>
-//                   <Link className="d-flex align-items-center gap-10 text-white">
-//                     <img src="images/cart.svg" alt="cart" />
-//                     <div className="dflex-column gap-10">
-//                       <span className="badge bg-white text-dark">0</span>
-//                       <p className="mb-0">$ 500</p>
-//                     </div>
-//                   </Link>
-//                 </div>
-//               </div>
-//             </div>
-//           </div>
-//         </div>
-//       </header>
-//       <header className="header-bottom py-3">
-//         <div className="container-xxl">
-//           <div className="row">
-//             <div className="col-12">
-//               <div className="menu-bottom d-flex align-items-center gap-30">
-//                 <div>
-//                   <div className="dropdown">
-//                     <button
-//                       className="btn btn-secondary dropdown-toggle bg-transparent border-0 gap-15 d-flex align-items-center"
-//                       type="button"
-//                       id="dropdownMenuButton1"
-//                       data-bs-toggle="dropdown"
-//                       aria-expanded="false"
-//                     >
-//                       <img src="images/menu.svg" alt="menu" />
-//                       <span className="me-5 d-inline-block">
-//                         Shop Categories
-//                       </span>
-//                     </button>
-//                     <ul
-//                       className="dropdown-menu"
-//                       aria-labelledby="dropdownMenuButton1"
-//                     >
-//                       <li>
-//                         <Link className="dropdown-item text-white" to="/">
-//                           Action
-//                         </Link>
-//                       </li>
-//                       <li>
-//                         <Link className="dropdown-item text-white" to="/">
-//                           Another action
-//                         </Link>
-//                       </li>
-//                       <li>
-//                         <Link className="dropdown-item text-white" to="/">
-//                           Something else here
-//                         </Link>
-//                       </li>
-//                     </ul>
-//                   </div>
-//                 </div>
-//                 Name
-//                 <div className="menu-links">
-//                   <div className="d-flex align-items-center gap-15">
-//                     <NavLink to="/">Home</NavLink>
-//                     <NavLink to="/">Our Store</NavLink>
-//                     <NavLink to="/">Blogs</NavLink>
-//                     <NavLink to="/contact">Contact</NavLink>
-//                   </div>
-//                 </div>
-//               </div>
-//             </div>
-//           </div>
-//         </div>
-//       </header>
-//     </>
-//   );
-// }
-
-// export default Header;

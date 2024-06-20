@@ -17,12 +17,23 @@ const Orders = () => {
   const [enquiry, setEnquiry] = useState("");
   const [enquiryHistory, setEnquiryHistory] = useState([]);
   const [order_ID, setOrder_ID] = useState("");
+const [enquiryMessage, setEnquiryMessage] = useState("");
 
   const [bulkOrders, setBulkOrders] = useState([]);
   const [bulkOrderProducts, setBulkOrderProducts] = useState([]);
 
   const handleEnquirySubmit = async (enquiry, order_ID) => {
+    if (!validateEnquiry(enquiry)) {
+      alert("Enquiry message should be below 500 characters");
+      return;
+    }
+
+    if(enquiry == ""){
+      alert("Please enter enquiry message")
+      return;
+    }
     try {
+
       console.log(enquiry, order_ID);
       const response = await axios.post(`${base_url}enquiry/`, {
         enquiry,
@@ -41,6 +52,10 @@ const Orders = () => {
       console.log(error);
       // Handle error
     }
+  };
+
+  const validateEnquiry = (enquiry) => {
+    return enquiry.length <= 500;
   };
 
   const fetchEnquiryHistory = async (orderId) => {
@@ -109,37 +124,6 @@ const Orders = () => {
       // ),
     },
   ];
-
-
-
-
-  const bulkColumn = [
-    {
-      title: "Bulk Order ID",
-      dataIndex: "bulk_id",
-      key: "order_id",
-      sorter:(a, b) => a.order_id - b.order_id,
-      defaultSortOrder: 'descend',
-
-    },
-
-    {
-      title: "Order Status",
-      dataIndex: "order_status",
-      key: "order_status",
-    },
-    {
-      title: "View Ordered Products",
-      dataIndex: "view_ordered_products",
-      key: "view_ordered_products",
-      // render: (text, record) => (
-      //   <Button type="primary" onClick={() => showOrderedProducts(record)}>
-      //     View Ordered Products
-      //   </Button>
-      // ),
-    },
-  ];
-  
 
 
 
@@ -296,7 +280,7 @@ const Orders = () => {
           >
              Ordered Products
           </button>
-        ),
+        )
       }
     ))
 
@@ -315,8 +299,8 @@ const Orders = () => {
     <div className="px-5 py-2">
       <h3 className="mb-4 title">My Orders</h3>
       <div>{<Table columns={columns} dataSource={data1} />}</div>
-      <h3 className="mb-4 title">Bulk Orders</h3>
-      <div>{<Table columns={bulkColumn} dataSource={data2} />}</div>
+      {/* <h3 className="mb-4 title">Bulk Orders</h3> */}
+      {/* <div>{<Table columns={bulkColumn} dataSource={data2} />}</div> */}
 
       <Modal
         title="Order Details"
@@ -442,7 +426,7 @@ const Orders = () => {
             ))}
         </ul>
       </Modal>
-      <Modal
+      {/* <Modal
         title="Bulk Ordered Products"
         visible={isModalVisible3}
         okText="Ok"
@@ -488,7 +472,7 @@ const Orders = () => {
           />
         )}
         {bulkOrderProducts && bulkOrderProducts.length === 0 && <p>No products ordered.</p>}
-      </Modal>
+      </Modal> */}
     </div>
   );
 };

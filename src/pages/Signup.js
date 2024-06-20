@@ -53,7 +53,6 @@ const navigate = useNavigate()
             toast.success(res.data.message)
             navigate('/login')
           }else{
-            toast.error(res.data.message)
           }
 
           
